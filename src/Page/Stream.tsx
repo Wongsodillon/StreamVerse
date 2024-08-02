@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { Routes, Route } from "react-router-dom";
-import Topbar from "./scenes/global/Topbar";
 import Dashboard from "./scenes/dashboard";
 import Users from "./scenes/user";
 import Staff from "./scenes/staff";
@@ -27,37 +26,32 @@ function Stream() {
   const [isSidebar, setIsSidebar] = useState(true);
 
   return (
-    <Layout isSidebar={isSidebar}>
-      <ColorModeContext.Provider value={colorMode}>
-        <ThemeProvider theme={theme}>
-          <CssBaseline />
-          <div className="app">
-            <Topbar setIsSidebar={setIsSidebar} />
-            <main className="content">
-              <Routes>
-                <Route path="/" element={<Dashboard />} />
-                <Route path="user" element={<Users />} />
-                <Route path="staff" element={<Staff />} />
-                <Route path="job" element={<Jobs />} />
-                <Route path="jobapplication" element={<JobApplication />} />
-                <Route path="company" element={<Company />} />
-                <Route path="createuser" element={<CreateUser />} />
-                <Route path="bar" element={<Bar />} />
-                <Route path="pie" element={<Pie />} />
-                <Route path="line" element={<Line />} />
-                <Route path="faq" element={<FAQ />} />
-                <Route path="calendar" element={<Calendar />} />
-                <Route path="geography" element={<Geography />} />
-                <Route path="edituser/:id" element={<EditUser />} />
-                <Route path="editjob/:id" element={<EditJob />} />
-                <Route path="editcompany/:id" element={<EditCompany />} />
-                <Route path="editapplication/:id" element={<EditApplication />} />
-              </Routes>
-            </main>
-          </div>
-        </ThemeProvider>
-      </ColorModeContext.Provider>
-    </Layout>
+    <ColorModeContext.Provider value={colorMode}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <Layout isSidebar={isSidebar} setIsSidebar={setIsSidebar}>
+          <Routes>
+            <Route path="/" element={<Dashboard />} />
+            <Route path="user" element={<Users />} />
+            <Route path="staff" element={<Staff />} />
+            <Route path="job" element={<Jobs />} />
+            <Route path="jobapplication" element={<JobApplication />} />
+            <Route path="company" element={<Company />} />
+            <Route path="createuser" element={<CreateUser />} />
+            <Route path="bar" element={<Bar />} />
+            <Route path="pie" element={<Pie />} />
+            <Route path="line" element={<Line />} />
+            <Route path="faq" element={<FAQ />} />
+            <Route path="calendar" element={<Calendar />} />
+            <Route path="geography" element={<Geography />} />
+            <Route path="edituser/:id" element={<EditUser />} />
+            <Route path="editjob/:id" element={<EditJob />} />
+            <Route path="editcompany/:id" element={<EditCompany />} />
+            <Route path="editapplication/:id" element={<EditApplication />} />
+          </Routes>
+        </Layout>
+      </ThemeProvider>
+    </ColorModeContext.Provider>
   );
 }
 

@@ -30,7 +30,7 @@ const Dashboard: React.FC = () => {
     <Box m="20px">
       {/* HEADER */}
       <Box display="flex" justifyContent="space-between" alignItems="center">
-        <Header title="DASHBOARD" subtitle="Welcome to your dashboard" />
+       
 
         <Box>
           
@@ -258,7 +258,7 @@ const Dashboard: React.FC = () => {
             <BarChart isDashboard={true} /> 
           </Box>
         </Box>
-          <Box
+        <Box
           gridColumn="span 4"
           gridRow="span 2"
           backgroundColor={colors.primary[400]}
@@ -275,6 +275,71 @@ const Dashboard: React.FC = () => {
             <GeographyChart isDashboard={true} />
           </Box>
         </Box>
+
+                {/* ROW 4 */}
+                <Box
+          gridColumn="span 4"
+          gridRow="span 2"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+        >
+          <Typography variant="h5" fontWeight="600">
+            Campaign
+          </Typography>
+          <Box
+            display="flex"
+            flexDirection="column"
+            alignItems="center"
+            marginTop="25px"
+          >
+            <ProgressCircle size="125" />
+            <Typography
+              variant="h5"
+              color={colors.greenAccent[500]}
+              marginTop="15px"
+            >
+              $48,352 revenue generated
+            </Typography>
+            <Typography>Includes extra misc expenditures and costs</Typography>
+          </Box>
+        </Box>
+        <Box
+          gridColumn="span 4"
+          gridRow="span 2"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+        >
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            padding="30px 30px 0 30px"
+          >
+            Sales Quantity
+          </Typography>
+          <Box height="250px" marginTop="-20px">
+            <BarChart isDashboard={true} /> 
+          </Box>
+        </Box>
+        <Box
+          gridColumn="span 4"
+          gridRow="span 2"
+          backgroundColor={colors.primary[400]}
+          padding="30px"
+        >
+          <Typography
+            variant="h5"
+            fontWeight="600"
+            sx={{ marginBottom: "15px" }}
+          >
+            Geography Based Traffic
+          </Typography>
+          <Box height="200px">
+            <GeographyChart isDashboard={true} />
+          </Box>
+        </Box>
+
+
+
       </Box>
     </Box>
   );
