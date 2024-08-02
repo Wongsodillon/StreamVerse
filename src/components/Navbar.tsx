@@ -8,7 +8,7 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="md:px-8 md:pt-4 fixed w-full">
+    <div className="md:px-8 md:pt-4 fixed w-full z-50">
       <nav className="flex justify-end sm:justify-between items-center px-8 py-6 sm:py-4 drop-shadow-md bg-white sm:rounded-2xl">
         <div>
           <ul className="hidden sm:flex space-x-8">
@@ -76,10 +76,10 @@ const Navbar = () => {
               <ResponsiveNavLink to="#">Contact</ResponsiveNavLink>
             </li>
             <div className="pb-1 border-t border-gray-200">
-              <div className="mt-2 spacy-y-1">
+              <div className="mt-2 space-y-1">
                 <Button>Login</Button>
               </div>
-              <div className="mt-2 spacy-y-1">
+              <div className="mt-2 space-y-1">
                 <Button variant={"secondary"}>Sign Up</Button>
               </div>
             </div>
