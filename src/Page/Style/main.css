@@ -1,0 +1,156 @@
+h2{
+    font-size: 100px;
+}
+
+p{
+    font-size: 15px;
+}
+
+col{
+    overflow:hidden;
+}
+
+/* Home */
+
+.logos {
+    padding: 60px 0;
+}
+  
+.logos-slide {
+    white-space: nowrap;
+    animation: slide 35s infinite linear;
+}
+  
+.logos-slide img {
+    height: 50px;
+    margin: 0 20px;
+}
+  
+  
+@keyframes slide {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(calc(-150px * 6)); 
+    }
+}
+
+/* Filter */
+
+.fil {
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    z-index: 999;
+    position: fixed; 
+  }
+  
+.filter-toggler { 
+    border: none;
+    padding: 10px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: fixed;
+    z-index: 999;
+}
+
+.filter-toggler:not(.open){
+    top: 80px;
+    left: 20px;
+}
+  
+.filter-toggler:not(.open) .toggler-icon {
+    color: black; 
+}
+  
+.filter-toggler:not(.open):hover .toggler-icon {
+    color: black; 
+    border-radius: 50%;
+    /* background-color: white;  */
+    transition: background-color 0.3s, padding 0.3s;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+.filter-toggler .toggler-icon {
+    display: inline-block;
+    color: black; 
+    padding: 10px;
+    transition: all 0.3s ease; 
+    font-weight: bold;
+}
+
+.filter-toggler:not(.open):not(:hover) .toggler-icon {
+    padding: 4px; 
+}
+
+.filter-toggler.open {
+    bottom: 0;
+    left: 0;
+}
+  
+.filter-toggler.open .toggler-icon {
+    color: black;
+    transform: rotate(360deg);
+}
+  
+.sidebar {
+    height: 100%;
+    width: 0;
+    position: fixed;
+    z-index: 1;
+    top: 0;
+    left: 0;
+    background-color: white; 
+    transition: width 0.3s;
+    padding-top: 60px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+}
+
+  
+.sidebar.show {
+    z-index: 998;
+    width: 250px;
+}
+  
+.sidebar.show a {
+    opacity: 1; 
+}
+  
+.sidebar a {
+    opacity: 0;
+    padding: 8px 35px;
+    text-decoration: none;
+    font-size: 20px;
+    color: black;
+    display: block;
+    transition: color 0.3s; 
+    position: relative;
+}
+  
+.sidebar a::after {
+    content: '';
+    position: absolute;
+    left: 35px;
+    bottom: 0;
+    width: 0;
+    height: 2px; 
+    background-color: black; 
+    transition: width 0.3s; 
+}
+  
+.sidebar a:hover::after {
+    width: 20%; 
+}
+  
+  
+.sidebar .closebtn {
+    position: absolute;
+    top: 0;
+    right: 25px;
+    font-size: 36px;
+    margin-left: 50px;
+}
+
