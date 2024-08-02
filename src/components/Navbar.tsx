@@ -1,21 +1,18 @@
 import { Link } from "react-router-dom";
-import Logo from "../assets/CarrerSpotlogo.svg";
-import LogoBlue from "../assets/CareerSpotBlue.svg";
 import React from "react";
 
 function Navbar() {
   return (
     <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top">
       <div className="container-fluid">
-        <a className="navbar-brand" href="#">
+        {/* <a className="navbar-brand" href="#">
           <img
             className="image-fluid"
-            src={LogoBlue}
             style={{ objectFit: "contain", width: 150, height: "auto" }}
             id=""
             alt=""
           />
-        </a>
+        </a> */}
         <button
           className="navbar-toggler"
           type="button"
