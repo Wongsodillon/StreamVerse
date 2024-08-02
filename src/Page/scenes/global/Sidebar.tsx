@@ -90,7 +90,7 @@ const Sidebars: React.FC<SidebarProps> = () => {
               }}
             >
               <Typography variant="h3" color={colors.grey[100]}>
-                ADMINIS
+                Streaming
               </Typography>
               <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                 <MenuOutlinedIcon />
