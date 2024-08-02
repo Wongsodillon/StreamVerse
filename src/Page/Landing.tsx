@@ -1,5 +1,6 @@
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const Landing = () => {
   return (
@@ -12,9 +13,11 @@ const Landing = () => {
           <span className="text-[#892EE1] text-7xl font-anton">THEY ARE</span>
           <span className="text-[#FF9A00] text-8xl font-anton">WATCHING</span>
           <br />
-          <Button size="xl" className="rounded-3xl px-16 text-xl">
-            Lets Start
-          </Button>
+          <Link to="/watch">
+            <Button size="xl" className="rounded-3xl px-16 text-xl">
+              Lets Start
+            </Button>
+          </Link>
         </div>
       </main>
     </div>

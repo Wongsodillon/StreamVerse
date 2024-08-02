@@ -9,8 +9,8 @@ function App() {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/ok" element={<Landing />} />
-          <Route path="/Admin/*" element={<Stream/>} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/watch/*" element={<Stream/>} />
         </Routes>
       </BrowserRouter>
     </>
