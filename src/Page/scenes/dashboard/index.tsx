@@ -75,7 +75,7 @@ const Dashboard: React.FC = () => {
 
   return (
     <Box m="20px">
-      <Box display="flex" justifyContent="center" alignItems="center">
+
         <section className="mostVisited secs" style={{margin:0, paddingBottom:"20px", paddingLeft:0,}}>
             <div className="container">
               <div className="row">
@@ -187,8 +187,67 @@ const Dashboard: React.FC = () => {
               </div>
             </div>
         </section>
-      </Box>
 
+        <Box className="p-6">
+          <Box className="flex gap-14">
+            {/* Card 1 */}
+            <Box
+              className="flex-1 bg-white-800 text-black p-4 rounded-lg shadow-md"
+              sx={{ maxWidth: '400px' }}
+            >
+              <img
+                src={Place4}
+              />
+              <Typography variant="h6" component="h3">
+                Card Title 1
+              </Typography>
+              <Typography variant="body2" component="p">
+                Card description goes here. This is a brief overview of the content.
+              </Typography>
+              <Typography variant="body2" component="p" style={{paddingTop:"90px"}}>
+                Card description goes here. This is a brief overview of the content.
+              </Typography>
+            </Box>
+
+            {/* Card 2 */}
+            <Box
+              className="flex-1 bg-white-800 text-black p-4 rounded-lg shadow-md"
+              sx={{ maxWidth: '400px' }}
+            >
+              <img
+                src={Place2}
+              />
+              <Typography variant="h6" component="h3">
+                Card Title 2
+              </Typography>
+              <Typography variant="body2" component="p">
+                Card description goes here. This is a brief overview of the content.
+              </Typography>
+              <Typography variant="body2" component="p" style={{paddingTop:"90px"}}>
+                Card description goes here. This is a brief overview of the content.
+              </Typography>
+            </Box>
+
+            {/* Card 3 */}
+            <Box
+              className="flex-1 bg-white-800 text-black p-4 rounded-lg shadow-md"
+              sx={{ maxWidth: '400px' }}
+            >
+              <img
+                src={Place3}
+              />
+              <Typography variant="h6" component="h3">
+                Card Title 3
+              </Typography>
+              <Typography variant="body2" component="p">
+                Card description goes here. This is a brief overview of the content.
+              </Typography>
+              <Typography variant="body2" component="p" style={{paddingTop:"90px"}}>
+                Card description goes here. This is a brief overview of the content.
+              </Typography>
+            </Box>
+          </Box>
+        </Box>
       {/* GRID & CHARTS */}
       <Box
         display="grid"
@@ -196,6 +255,10 @@ const Dashboard: React.FC = () => {
         gridAutoRows="140px"
         gap="20px"
       >
+
+        {/* section1 */}
+
+
         {/* ROW 1 */}
         <Box
           gridColumn="span 3"
