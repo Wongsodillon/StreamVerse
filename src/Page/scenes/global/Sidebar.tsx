@@ -67,6 +67,7 @@ const Sidebars: React.FC<SidebarProps> = () => {
       style={{
         background: `${colors.primary[400]} !important`,
         height: "100vh",
+        overflow: "hidden", // Prevent scrollbar in sidebar
       }}
     >
       <Menu>
@@ -76,6 +77,7 @@ const Sidebars: React.FC<SidebarProps> = () => {
           style={{
             margin: "10px 0 20px 0",
             color: colors.grey[100],
+            overflow: "hidden", // Ensure no overflow in menu item
           }}
         >
           {!isCollapsed && (
@@ -130,7 +132,7 @@ const Sidebars: React.FC<SidebarProps> = () => {
           </div>
         )}
 
-        <div style={{ paddingLeft: isCollapsed ? undefined : "10%" }}>
+        <div style={{ paddingLeft: isCollapsed ? undefined : "10%", overflow: "hidden" }}>
           <Item
             title="Dashboard"
             to="/Admin"
@@ -156,7 +158,7 @@ const Sidebars: React.FC<SidebarProps> = () => {
           <Item
             title="Staff Information"
             to="/Admin/staff"
-            icon={<GroupOutlinedIcon/>}
+            icon={<GroupOutlinedIcon />}
             selected={selected}
             setSelected={setSelected}
           />
