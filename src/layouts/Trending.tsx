@@ -42,10 +42,10 @@ const Dashboard: React.FC = () => {
   return (
     <div>
       <div className="grid-cols-12">
-        <section className="mostVisited secs" style={{margin:0, paddingBottom:"20px", paddingLeft:0,}}>
-          <div className="container">
-            <div className="row">
-              <div className="carousel">
+        <section className="m-0 p-0 pb-20">
+          <div className="flex flex-wrap mx-auto ">
+            <div className="w-full">
+              <div className="relative w-[80vw] h-[60vh] mt-0 p-0 carousel">
                 <div className="list">
                   <div className={currentIndex === 0 ? 'item active' : 'item'}>
                     <img src={Place1}></img>
@@ -157,7 +157,6 @@ const Dashboard: React.FC = () => {
         </div>
         </div>
 
-        {/* Additional Card Section */}
         <div className="p-6">
         <div className="flex justify-center gap-6">
             <div className="bg-white text-black p-4 rounded-lg shadow-md w-full max-w-[400px]">
