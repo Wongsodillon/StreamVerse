@@ -1,19 +1,12 @@
 import MainLayout from "@/layouts/MainLayout";
-import Trending from "@/layouts/Trending";
-import { BrowserRouter, Route, Routes } from "react-router-dom";
-
+import StreamVerse from "@/pages/StreamVerse";
 
 const Home = () => {
   return (
     <MainLayout>
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Trending/>} />
-        </Routes>
-      </BrowserRouter>
+      <StreamVerse />
     </MainLayout>
   );
 };
 
 export default Home;
-
