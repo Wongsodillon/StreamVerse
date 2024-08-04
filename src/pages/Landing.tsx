@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import PurpleShape from "../assets/purple_shape.png";
-import Rocket from "../assets/rocket.png";
+import Rocket from "../assets/rocket.svg";
 import PurpleSphere from "../assets/purple_sphere.png";
 import YellowSphere from "../assets/yellow_sphere.png";
 import { useNavigate } from "react-router-dom";
@@ -27,8 +27,8 @@ const Landing = () => {
         />
       </div>
       <Navbar />
-      <main className="relative flex flex-col-reverse items-center justify-center text-center pt-32 md:flex-row">
-        <div className="lg:absolute w-[30rem] h-[30rem] left-0 top-[50%]">
+      <main className="relative flex items-center justify-center text-center pt-32">
+        <div className="lg:absolute hidden md:block md:w-[20rem] md:h-[20rem] lg:w-[30rem] lg:h-[30rem] left-0 top-[50%]">
           <img src={Rocket} className="w-full h-full" />
         </div>
         <div className="flex flex-col gap-2 items-start md:ml-12 lg:ml-80">
