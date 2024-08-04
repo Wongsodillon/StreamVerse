@@ -14,12 +14,12 @@ const ProfileStatus = ({
 }: ProfileStatusProps) => {
   return (
     <div className="flex justify-between items-center">
-      <div className="flex gap-4 items-center">
-        <Avatar>
+      <div className="flex gap-2 items-center">
+        <Avatar className="w-8 h-8">
           <AvatarImage src={avatar} alt="@shadcn" />
           <AvatarFallback>{username.charAt(0)}</AvatarFallback>
         </Avatar>
-        <p className="text-md overflow-hidden text-ellipsis whitespace-nowrap max-w-[150px]">
+        <p className="text-md overflow-hidden text-ellipsis whitespace-nowrap max-w-[130px]">
           {username}
         </p>
       </div>

@@ -15,18 +15,18 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
   return (
     <aside
       className={
-        "absolute left-0 top-0 z-[999] flex h-screen w-72 lg:min-w-[12.5%] flex-col overflow-y-hidden bg-white duration-300 ease-linear md:static md:translate-x-0 " +
+        "absolute left-0 top-0 z-[999] flex h-screen w-60 flex-col overflow-y-hidden bg-white duration-300 ease-linear md:static md:translate-x-0 " +
         (show ? "translate-x-0" : "-translate-x-full")
       }
     >
-      <div className="px-8 py-6 flex justify-between items-center">
+      <div className="px-6 py-6 flex justify-between items-center">
         <p className="text-black text-2xl font-semibold">Streaming</p>
         <button onClick={() => toggleShow(false)} className="lg:hidden">
           <X className="text-black" size={24} />
         </button>
       </div>
       <div className="no-scrollbar overflow-y-auto flex flex-col duration-300 ease-linear">
-        <nav className="py-4 px-4 lg:px-6">
+        <nav className="py-4 px-4">
           <div className="flex flex-col gap-4">
             <Button
               variant={"secondary"}
@@ -44,6 +44,22 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
                   <p className="text-[#868686] text-lg">Following</p>
                 </AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4">
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
+                  <ProfileStatus />
                   <ProfileStatus />
                   <ProfileStatus
                     username="propanemethanolpropanemethanol"

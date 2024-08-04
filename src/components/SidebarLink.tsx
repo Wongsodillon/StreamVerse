@@ -9,7 +9,7 @@ const SidebarLink = ({
   return (
     <Link
       {...props}
-      className={`flex items-center px-4 py-2 text-lg font-medium hover:text-darkPurple transition-all duration-200 ${
+      className={`flex items-center px-2 py-2 text-lg font-medium hover:text-darkPurple transition-all duration-200 ${
         active ? "text-darkPurple" : "text-[#868686]"
       } ${className}`}
     >
