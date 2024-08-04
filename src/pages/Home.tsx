@@ -1,9 +1,10 @@
 import MainLayout from "@/layouts/MainLayout";
+import StreamVerse from "@/pages/StreamVerse";
 
 const Home = () => {
   return (
     <MainLayout>
-      <p>Ini Home Page</p>
+      <StreamVerse />
     </MainLayout>
   );
 };
