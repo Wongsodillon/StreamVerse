@@ -1,6 +1,7 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Trending from "@/layouts/Trending";
+import Streaming from "./Streaming";
 
 const StreamVerse = () => {
   return (

@@ -1,7 +1,7 @@
 import Navbar from "@/components/Navbar";
 import { Button } from "@/components/ui/button";
 import PurpleShape from "../assets/purple_shape.png";
-import Rocket from "../assets/rocket.svg";
+import Rocket from "../assets/rocket.png";
 import PurpleSphere from "../assets/purple_sphere.png";
 import YellowSphere from "../assets/yellow_sphere.png";
 import { useNavigate } from "react-router-dom";

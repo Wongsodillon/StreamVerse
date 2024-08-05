@@ -11,7 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-const MainLayout = ({ children }: PropsWithChildren) => {
+type MainLayoutProps = PropsWithChildren & {
+  scrollable?: boolean;
+};
+
+const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
   const [showSidebar, setShowSidebar] = useState(false);
 
   const toggleSidebar = () => {
@@ -29,7 +33,7 @@ const MainLayout = ({ children }: PropsWithChildren) => {
       )}
       <div className="relative flex flex-col flex-1 overflow-y-auto overflow-x-hidden">
         <header className="sticky top-0 z-50 flex w-full bg-white">
-          <div className="flex flex-grow items-center justify-between p-4 shadow-2 md:p-6">
+          <div className="flex flex-grow items-center justify-between p-5 shadow-2">
             <div className="flex gap-4 items-center">
               <button onClick={toggleSidebar} className="block md:hidden">
                 <Menu className="text-darkGray" size={24} />
@@ -79,7 +83,9 @@ const MainLayout = ({ children }: PropsWithChildren) => {
             </div>
           </div>
         </header>
-        <main>{children}</main>
+        <main className={scrollable ? "" : "overflow-y-hidden"}>
+          {children}
+        </main>
       </div>
     </div>
   );

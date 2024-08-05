@@ -28,12 +28,9 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
       <div className="no-scrollbar overflow-y-auto flex flex-col duration-300 ease-linear">
         <nav className="py-4 px-4">
           <div className="flex flex-col gap-4">
-            <Button
-              variant={"secondary"}
-              className="w-full py-6 text-xl rounded-xl"
-            >
-              New Feed
-            </Button>
+            <SidebarLink to="#" active={true}>
+              Home
+            </SidebarLink>
             <SidebarLink to="#">Trending</SidebarLink>
             <SidebarLink to="#">Following</SidebarLink>
             <SidebarLink to="#">Your Videos</SidebarLink>

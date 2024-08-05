@@ -6,11 +6,14 @@ const SidebarLink = ({
   children,
   ...props
 }: LinkProps & { active?: boolean }) => {
+  const activeStyles =
+    "bg-purple-gradient px-3 text-white rounded-md transition-all duration-200 hover:text-white";
+
   return (
     <Link
       {...props}
-      className={`flex items-center px-2 py-2 text-lg font-medium hover:text-darkPurple transition-all duration-200 ${
-        active ? "text-darkPurple" : "text-[#868686]"
+      className={`flex items-center px-2 py-2 text-lg font-medium transition-all duration-200 hover:text-darkPurple ${
+        active ? activeStyles : ""
       } ${className}`}
     >
       {children}
