@@ -38,13 +38,12 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
               </Button>
             </Link>
             <SidebarLink to="/home/trending">Trending</SidebarLink>
-            <SidebarLink to="#">Following</SidebarLink>
-            <SidebarLink to="#">Your Videos</SidebarLink>
+            <SidebarLink to="#">Connect your Wallet</SidebarLink>
             <Separator />
             <Accordion type="single" collapsible className="w-full -mt-2">
               <AccordionItem value="1">
                 <AccordionTrigger>
-                  <p className="text-[#868686] text-lg">Following</p>
+                  <p className="text-[#868686] text-lg">Friend</p>
                 </AccordionTrigger>
                 <AccordionContent className="flex flex-col gap-4">
                   <ProfileStatus />
