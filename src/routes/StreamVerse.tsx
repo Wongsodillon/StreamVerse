@@ -1,14 +1,15 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Categories from "@/layouts/Categories";
-import Trending from "@/layouts/Trending";
-import Streaming from "./Streaming";
+import Categories from "@/pages/Home";
+import Trending from "@/pages/Categories";
+import Streaming from "../pages/Streaming";
 
 const StreamVerse = () => {
   return (
     <Routes>
+      <Route path="/" element={<Streaming />} />
       <Route path="/category" element={<Categories />} />
-      <Route path="/trending" element={<Trending/>} />
+      <Route path="/trending" element={<Trending />} />
     </Routes>
   );
 };

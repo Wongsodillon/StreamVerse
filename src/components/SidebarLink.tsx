@@ -1,19 +1,17 @@
-import { Link, LinkProps } from "react-router-dom";
+import { Link, LinkProps, useLocation } from "react-router-dom";
 
-const SidebarLink = ({
-  active = false,
-  className = "",
-  children,
-  ...props
-}: LinkProps & { active?: boolean }) => {
+const SidebarLink = ({ to, className = "", children, ...props }: LinkProps) => {
+  const location = useLocation();
+  const isActive = location.pathname === to;
   const activeStyles =
-    "bg-purple-gradient px-3 text-white rounded-md transition-all duration-200 hover:text-white";
+    "bg-purple-gradient px-2 text-white transition-all duration-500 hover:text-white";
 
   return (
     <Link
+      to={to}
       {...props}
-      className={`flex items-center px-2 py-2 text-lg font-medium transition-all duration-200 hover:text-darkPurple ${
-        active ? activeStyles : ""
+      className={`flex items-center py-2 text-lg rounded-md font-medium transition-all duration-200 hover:text-darkPurple ${
+        isActive ? activeStyles : ""
       } ${className}`}
     >
       {children}

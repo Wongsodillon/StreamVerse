@@ -1,6 +1,5 @@
 import { X } from "react-feather";
-import { Link } from 'react-router-dom';
-import { Button } from "./ui/button";
+import { useLocation } from "react-router-dom";
 import SidebarLink from "./SidebarLink";
 import { Separator } from "./ui/separator";
 import ProfileStatus from "./ProfileStatus";
@@ -16,7 +15,7 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
   return (
     <aside
       className={
-        "absolute left-0 top-0 z-[999] flex h-screen w-72 lg:min-w-[12.5%] flex-col overflow-y-hidden bg-white duration-300 ease-linear md:static md:translate-x-0 " +
+        "absolute left-0 top-0 z-[999] flex h-screen w-72 lg:min-w-[12.5%] flex-col overflow-y-hidden bg-white duration-300 ease-linear lg:static lg:translate-x-0 " +
         (show ? "translate-x-0" : "-translate-x-full")
       }
     >
@@ -29,14 +28,8 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
       <div className="no-scrollbar overflow-y-auto flex flex-col duration-300 ease-linear">
         <nav className="py-4 px-4 lg:px-6">
           <div className="flex flex-col gap-4">
-            <Link to="/home/category">
-              <Button
-                variant={"secondary"}
-                className="w-full py-6 text-xl rounded-xl"
-              >
-                Categories
-              </Button>
-            </Link>
+            <SidebarLink to="/home">Home</SidebarLink>
+            <SidebarLink to="/home/category">Category</SidebarLink>
             <SidebarLink to="/home/trending">Trending</SidebarLink>
             <SidebarLink to="#">Connect your Wallet</SidebarLink>
             <Separator />
