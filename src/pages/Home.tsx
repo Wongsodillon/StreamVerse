@@ -6,17 +6,20 @@ import Place1 from "@/assets/place1.webp";
 import Place2 from "@/assets/place2.jpg";
 import Place3 from "@/assets/place3.jpg";
 import Place4 from "@/assets/place4.jpg";
+import MainLayout from "@/layouts/MainLayout";
+import LiveVideoCard from "@/components/LiveVideoCard";
 import { Wifi } from "react-feather";
 import Thumbnail from "@/components/Thumbnail";
 import "@/layouts/page.css";
-import "swiper/css";
-import "swiper/css/free-mode";
-import "swiper/css/pagination";
-// import 'swiper/swiper-bundle.min.css';
-import { FreeMode, Pagination } from "swiper/modules";
-import { Swiper, SwiperSlide } from "swiper/react";
-import MainLayout from "@/layouts/MainLayout";
-import LiveVideoCard from "@/components/LiveVideoCard";
+
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import 'swiper/css/free-mode';
+import 'swiper/css/pagination';
+import { FreeMode, Pagination } from 'swiper/modules';
+
+
 
 const Home: React.FC = () => {
   const streams = [
@@ -312,7 +315,7 @@ const Home: React.FC = () => {
                 </div>
                 {/* thumbnail */}
 
-                <div className="thumbnail">
+                {/* <div className="thumbnail">
                   <div
                     className={currentIndex === 0 ? "item active" : "item"}
                     onClick={() => handleThumbnailClick(0)}
@@ -369,7 +372,38 @@ const Home: React.FC = () => {
                       </div>
                     </div>
                   </div>
+                </div> */}
+               {/* Replace Thumbnail with Swiper */}
+               <div className="absolute bottom-10 w-1/2 left-[50%] px-4">
+                  <Swiper
+                    slidesPerView={3}
+                    spaceBetween={10}
+                    freeMode={true}
+                    pagination={{ clickable: true }}
+                    modules={[FreeMode, Pagination]}
+                    className="swiper-container"
+                  >
+                    {[Place1, Place2, Place3, Place4, Place1].map((place, index) => (
+                      <SwiperSlide key={index}>
+                        <div
+                          className={`cursor-pointer ${currentIndex === index ? 'opacity-100' : 'opacity-50'}`}
+                          onClick={() => handleThumbnailClick(index)}
+                        >
+                          <img
+                            className="w-full h-full object-cover rounded-xl"
+                            src={place}
+                            alt={`Thumbnail ${index + 1}`}
+                          />
+                        </div>
+                      </SwiperSlide>
+                    ))}
+                  </Swiper>
                 </div>
+
+
+                
+
+
               </div>
             </div>
           </div>
@@ -426,6 +460,9 @@ const Home: React.FC = () => {
           ))}
         </div>
       </div>
+
+
+     
     </MainLayout>
   );
 };
