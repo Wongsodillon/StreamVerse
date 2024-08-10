@@ -177,7 +177,7 @@ const Streaming = () => {
             <form action="">
               <Input
                 placeholder="Type your message"
-                className="border-[2px] focus:ring-4 focus:ring-purple-500 focus:border-purple-500 focus:border-[3px]"
+                className="border focus:ring-4 focus:ring-purple-500 focus:border-purple-500"
               />
             </form>
           </div>
