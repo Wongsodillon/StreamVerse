@@ -1,16 +1,41 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
+import axios from "axios";
+import { BASE_URL } from "@/config/constants";
+import { useNavigate } from "react-router-dom";
+import InputError from "@/components/ui/input-error";
 
 const Register = ({ changePage }: { changePage: (index: number) => void }) => {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [password_confirmation, setPasswordConfirmation] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const result = await axios.post(`${BASE_URL}/register`, {
+        username: username,
+        email: email,
+        password: password,
+        password_confirmation: password_confirmation,
+        hedera_account_id: "0.0.4660031",
+      });
+      if (result.status === 200) {
+        console.log("Successfully registered");
+        navigate("/home");
+      }
+    } catch (error: any) {
+      setError(error.response.data.message);
+    }
+  };
 
   return (
     <>
-      <form className="flex flex-col justify-center h-full">
+      <form onSubmit={onSubmit} className="flex flex-col justify-center h-full">
         <p className="text-3xl font-bold text-white sm:text-black">
           Hi, Welcome to StreamVerse!
         </p>
@@ -83,7 +108,7 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
 
           {/* <InputError message={errors.password_confirmation} className="mt-2" /> */}
         </div>
-
+        <InputError message={error} className="mt-2" />
         <div className="flex flex-col items-start justify-end mt-8 gap-4">
           <Button
             className="w-full text-md bg-[#6C5DD3] py-6 text-white border-none hover:bg-[#6C5DD3]/80"

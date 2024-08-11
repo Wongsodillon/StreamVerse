@@ -1,21 +1,49 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { Mail } from "react-feather";
 import { FiEye, FiEyeOff } from "react-icons/fi";
+import InputError from "@/components/ui/input-error";
+import axios from "axios";
+import { BASE_URL } from "@/config/constants";
+import { useNavigate } from "react-router-dom";
+import { useUser } from "@/context/UserContext";
 
 const Login = ({ changePage }: { changePage: (index: number) => void }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  const [user, fetchUser] = useUser();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
+  const onSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const result = await axios.post(
+        `${BASE_URL}/login`,
+        {
+          email: email,
+          password: password,
+        },
+        { withCredentials: true } // If you still need to include credentials
+      );
 
+      if (result.status === 200) {
+        localStorage.setItem("token", result.data.token);
+        fetchUser();
+        navigate("/home");
+      }
+    } catch (error: any) {
+      console.log(error);
+      setError(error.response?.data?.message || "An error occurred");
+    }
+  };
   return (
     <>
-      <form className="flex flex-col justify-center h-full">
+      <form onSubmit={onSubmit} className="flex flex-col justify-center h-full">
         <p className="text-3xl font-bold text-white sm:text-black">
           Hi! Welcome Back
         </p>
@@ -54,9 +82,8 @@ const Login = ({ changePage }: { changePage: (index: number) => void }) => {
           >
             {showPassword ? <FiEyeOff /> : <FiEye />}
           </span>
-          {/* <InputError message={errors.password} className="mt-1" /> */}
         </div>
-
+        <InputError message={error} className="mt-1" />
         <div className="flex flex-col items-start justify-end mt-8 gap-4">
           <Button
             className="w-full text-md bg-[#6C5DD3] py-6 text-white border-none hover:bg-[#6C5DD3]/80"
