@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ProfilePicture from "@/components/ProfilePicture";
 
 type MainLayoutProps = PropsWithChildren & {
   scrollable?: boolean;
@@ -135,10 +136,11 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <Avatar>
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                    <ProfilePicture
+                      src={user.profile.profile_picture}
+                      full_name={user.profile.full_name}
+                      className="w-12 h-12"
+                    />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-48 px-2 py-2">
                     <div className="flex px-2 py-2">
@@ -147,7 +149,7 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                       </p>
                     </div>
                     <DropdownMenuGroup>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate("/account")}>
                         <User className="mr-2 h-5 w-5" />
                         Account
                       </DropdownMenuItem>

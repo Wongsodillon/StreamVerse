@@ -87,7 +87,7 @@ const Streaming = () => {
                             />
                           ))}
                         </div>
-                        <div className="flex flex-col items-end gap-2 mt-4">
+                        <div className="flex flex-col items-end gap-2 mt-4 px-2">
                           <p className="font-bold w-full">Send custom amount</p>
                           <Input
                             placeholder="Enter HBar amount"

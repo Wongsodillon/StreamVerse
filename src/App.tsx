@@ -7,6 +7,7 @@ import AuthPage from "./pages/Auth/AuthPage";
 import { UserProvider } from "./context/UserContext";
 import { MetamaskContextProvider } from "./context/MetaMaskContext";
 import GuestMiddleware from "./middleware/GuestMiddleware";
+import Account from "./pages/Account/Account";
 
 function App() {
   return (
@@ -25,6 +26,7 @@ function App() {
             <Route path="/" element={<Landing />} />
             <Route path="/home/*" element={<HomeRoutes />} />
             <Route path="/streaming/:user" element={<Streaming />} />
+            <Route path="/account" element={<Account />} />
           </Routes>
         </MetamaskContextProvider>
       </UserProvider>
