@@ -12,24 +12,28 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
   const [password, setPassword] = useState("");
   const [password_confirmation, setPasswordConfirmation] = useState("");
   const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoading(true);
     try {
-      const result = await axios.post(`${BASE_URL}/register`, {
+      const result = await axios.post(`${BASE_URL}/auth/register`, {
         username: username,
         email: email,
         password: password,
         password_confirmation: password_confirmation,
-        hedera_account_id: "0.0.4660031",
       });
-      if (result.status === 200) {
+      if (result.status === 201) {
         console.log("Successfully registered");
         navigate("/home");
       }
     } catch (error: any) {
+      console.log(error);
       setError(error.response.data.message);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -44,7 +48,7 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
         </p>
         <div className="mt-4">
           <label className="text-white sm:text-black" htmlFor="name">
-            Username
+            Name
           </label>
 
           <Input
@@ -54,8 +58,6 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
             placeholder="John Doe"
             onChange={(e) => setUsername(e.target.value)}
           />
-
-          {/* <InputError message={errors.name} className="mt-2" /> */}
         </div>
 
         <div className="mt-2">
@@ -70,8 +72,6 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
             placeholder="johndoe@example.com"
             onChange={(e) => setEmail(e.target.value)}
           />
-
-          {/* <InputError message={errors.email} className="mt-2" /> */}
         </div>
         <div className="mt-2">
           <label className="text-white sm:text-black" htmlFor="password">
@@ -86,8 +86,6 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
             placeholder="Password"
             onChange={(e) => setPassword(e.target.value)}
           />
-
-          {/* <InputError message={errors.password} className="mt-2" /> */}
         </div>
         <div className="mt-2">
           <label
@@ -105,14 +103,12 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
             placeholder="Confirm Password"
             onChange={(e) => setPasswordConfirmation(e.target.value)}
           />
-
-          {/* <InputError message={errors.password_confirmation} className="mt-2" /> */}
         </div>
         <InputError message={error} className="mt-2" />
         <div className="flex flex-col items-start justify-end mt-8 gap-4">
           <Button
             className="w-full text-md bg-[#6C5DD3] py-6 text-white border-none hover:bg-[#6C5DD3]/80"
-            // disabled={processing}
+            disabled={loading}
             variant="secondary"
           >
             Register

@@ -6,13 +6,11 @@ export const useWalletInterface = () => {
   const metamaskCtx = useContext(MetamaskContext);
 
   if (metamaskCtx.metamaskAccountAddress) {
-    console.log("Account ID: ", metamaskCtx.metamaskAccountAddress);
     return {
       accountId: metamaskCtx.metamaskAccountAddress,
       walletInterface: metamaskWallet,
     };
   } else {
-    console.log("Kinthil");
     return {
       accountId: null,
       walletInterface: null,
