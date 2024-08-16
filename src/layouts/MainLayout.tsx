@@ -48,6 +48,10 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
     }
   };
   const handleLogout = async () => {
+    if (accountId) {
+      walletInterface.disconnect();
+      return;
+    }
     try {
       const token = localStorage.getItem("token");
       if (!token) {
@@ -109,7 +113,7 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                   Login & Register
                 </Button>
               )}
-              {user && !accountId && <ConnectToWalletModal />}
+              {!accountId && user && <ConnectToWalletModal />}
               {accountId && user && (
                 <TooltipProvider>
                   <Tooltip>

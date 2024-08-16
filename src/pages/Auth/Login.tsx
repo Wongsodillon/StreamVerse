@@ -23,12 +23,12 @@ const Login = ({ changePage }: { changePage: (index: number) => void }) => {
     e.preventDefault();
     try {
       const result = await axios.post(
-        `${BASE_URL}/login`,
+        `${BASE_URL}/auth/login`,
         {
           email: email,
           password: password,
         },
-        { withCredentials: true } // If you still need to include credentials
+        { withCredentials: true }
       );
 
       if (result.status === 200) {
