@@ -20,7 +20,7 @@ export function UserProvider({ children }: PropsWithChildren<{}>) {
     }
 
     try {
-      const response = await axios.get(`${BASE_URL}/auth/user`, {
+      const response = await axios.get(`${BASE_URL}/auth`, {
         headers: {
           Authorization: `Bearer ${token}`,
         },

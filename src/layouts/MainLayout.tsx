@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
-import { Menu, Search, Settings, LogOut, User } from "react-feather";
+import { Menu, Search, Settings, LogOut, User, Video } from "react-feather";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -39,7 +39,7 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
   };
 
   useEffect(() => {
-    console.log(`AccountID: ${accountId}, WalletInterface: ${walletInterface}`);
+    console.log(user);
   }, []);
 
   const handleConnect = async () => {
@@ -58,7 +58,7 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
         return;
       }
       await axios.post(
-        `${BASE_URL}/logout`,
+        `${BASE_URL}/auth/logout`,
         {},
         {
           headers: {
@@ -142,12 +142,18 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-48 px-2 py-2">
                     <div className="flex px-2 py-2">
-                      <p className="text-md font-bold">{user.username}</p>
+                      <p className="text-md font-bold">
+                        {user.profile.full_name}
+                      </p>
                     </div>
                     <DropdownMenuGroup>
                       <DropdownMenuItem>
                         <User className="mr-2 h-5 w-5" />
                         Account
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Video className="mr-2 h-5 w-5" />
+                        My Channel
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Settings className="mr-2 h-5 w-5" />
