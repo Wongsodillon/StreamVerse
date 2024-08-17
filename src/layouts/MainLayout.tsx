@@ -39,9 +39,9 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
     setShowSidebar(!showSidebar);
   };
 
-  useEffect(() => {
-    console.log(user);
-  }, []);
+  // useEffect(() => {
+  //   console.log(user);
+  // }, []);
 
   const handleConnect = async () => {
     if (accountId) {
@@ -153,7 +153,11 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                         <User className="mr-2 h-5 w-5" />
                         Account
                       </DropdownMenuItem>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          navigate(`/stream/${user.stream.topic_id}`)
+                        }
+                      >
                         <Video className="mr-2 h-5 w-5" />
                         My Channel
                       </DropdownMenuItem>

@@ -191,7 +191,7 @@ const Home: React.FC = () => {
                         <Button
                           className="w-1/3"
                           variant={"secondary"}
-                          onClick={() => navigate("/streaming/wongsodillon")}
+                          onClick={() => navigate("/stream/wongsodillon")}
                         >
                           Watch
                         </Button>

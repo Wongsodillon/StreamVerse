@@ -26,6 +26,7 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
         password_confirmation: password_confirmation,
       });
       if (result.status === 201) {
+        localStorage.setItem("token", result.data.token);
         console.log("Successfully registered");
         navigate("/home");
       }

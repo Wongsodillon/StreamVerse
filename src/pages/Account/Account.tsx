@@ -36,8 +36,6 @@ const Account = () => {
     fetchUser();
   };
 
-  useEffect(() => console.log(dateOfBirth), [dateOfBirth]);
-
   const saveChanges = async (e: React.FormEvent) => {
     e.preventDefault();
     try {

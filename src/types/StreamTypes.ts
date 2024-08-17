@@ -5,3 +5,15 @@ export type Stream = {
   user: string;
   views: string;
 };
+
+export type StreamType = {
+  id: number;
+  user_id: number;
+  title: string;
+  thumbnail: string;
+  stream_url: string;
+  is_live: boolean;
+  topic_id: string;
+  createdAt: Date;
+  updatedAt: Date;
+};

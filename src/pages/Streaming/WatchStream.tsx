@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/popover";
 import GiftSelectionCard from "@/components/GiftSelectionCard";
 
-const Streaming = () => {
+const WatchStream = () => {
   const [showChat, setShowChat] = useState(true);
   const [selectedGift, setSelectedGift] = useState<number | null>(null);
   const toggleChat = () => {
@@ -120,6 +120,23 @@ const Streaming = () => {
                 </div>
                 <p>Time elapsed: 4:06:20</p>
               </div>
+              <br />
+              <div className="flex flex-col gap-4">
+                <p className="font-bold text-xl">About James Dillon</p>
+                <div className="p-4 border-2 border-purple-500 rounded-sm bg-white">
+                  <p>
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Similique vel facere expedita dolor nobis ducimus ullam
+                    incidunt beatae perferendis sapiente voluptate labore ea
+                    reprehenderit, provident fuga nemo consequuntur cum
+                    adipisci. Lorem ipsum dolor sit amet, consectetur
+                    adipisicing elit. Reiciendis, odio dolorem veritatis quos
+                    repellendus maxime animi perferendis aliquid quaerat
+                    corporis pariatur expedita? Dolore, aliquid dolorum! Quasi,
+                    laborum! Quam, totam ad?
+                  </p>
+                </div>
+              </div>
             </div>
           </div>
           {!showChat && (
@@ -132,11 +149,11 @@ const Streaming = () => {
         </div>
         <div
           className={
-            "flex flex-col min-w-72 h-screen relative duration-200 ease-linear border-l  " +
+            "flex flex-col min-w-72 h-screen relative duration-200 bg-white ease-linear border-l  " +
             (showChat ? "" : "hidden")
           }
         >
-          <div className="flex items-center w-full justify-between px-6 py-4 border-b bg-white drop-shadow-md">
+          <div className="flex items-center w-full justify-between px-6 py-4 border-b drop-shadow-md">
             <p className="text-lg font-semibold">Live Chat</p>
             <X
               size={24}
@@ -172,8 +189,11 @@ const Streaming = () => {
               <p>Vamoss</p>
             </ScrollArea>
           </div>
-          <div className="p-3 min-h-[9rem] border-t bg-white ">
+          <div className="p-3 min-h-[11.25rem] border-t bg-white ">
             <form action="">
+              <p className="text-md font-semibold mb-1 text-purple-700">
+                Send Chat
+              </p>
               <Input
                 placeholder="Type your message"
                 className="border focus:ring-4 focus:ring-purple-500 focus:border-purple-500"
@@ -186,4 +206,4 @@ const Streaming = () => {
   );
 };
 
-export default Streaming;
+export default WatchStream;
