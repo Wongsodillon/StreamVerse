@@ -4,7 +4,6 @@ import "./App.css";
 import HomeRoutes from "./routes/HomeRoutes";
 import Streaming from "./pages/Streaming";
 import AuthPage from "./pages/Auth/AuthPage";
-import { UserProvider } from "./context/UserContext";
 import { MetamaskContextProvider } from "./context/MetaMaskContext";
 import GuestMiddleware from "./middleware/GuestMiddleware";
 import Account from "./pages/Account/Account";
@@ -12,7 +11,6 @@ import Account from "./pages/Account/Account";
 function App() {
   return (
     <BrowserRouter>
-      <UserProvider>
         <MetamaskContextProvider>
           <Routes>
             <Route
@@ -29,7 +27,6 @@ function App() {
             <Route path="/account" element={<Account />} />
           </Routes>
         </MetamaskContextProvider>
-      </UserProvider>
     </BrowserRouter>
   );
 }

@@ -4,9 +4,12 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import { BASE_URL } from "@/config/constants";
 import ProfilePicture from "@/components/ProfilePicture";
+import { FaTrashAlt } from "react-icons/fa";
+import { UserType } from "@/types/UserTypes";
+import { useToaster } from "@/context/ToastContext";
 
 interface ProfilePictureUploaderProps {
-  user: any; // Define the appropriate user type here
+  user: UserType;
   onUploadSuccess: () => void;
 }
 
@@ -18,7 +21,7 @@ const ProfilePictureUploader = ({
   const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string | null>(null);
-
+  const { toastSuccess, toastError } = useToaster();
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     accept: {
       "image/*": [],
@@ -30,7 +33,6 @@ const ProfilePictureUploader = ({
 
   useEffect(() => {
     if (base64List.length > 0) {
-      setUploadedImage(base64List[0]);
       updateProfilePicture(base64List[0]);
     }
   }, [base64List]);
@@ -52,14 +54,17 @@ const ProfilePictureUploader = ({
       );
 
       if (response.status === 200) {
-        console.log("Profile picture updated successfully");
+        if (base64Image) {
+          toastSuccess("Profile picture updated successfully");
+        } else {
+          toastSuccess("Profile picture removed successfully");
+        }
+        setUploadedImage(base64Image);
         onUploadSuccess();
       }
     } catch (err: any) {
-      console.error("Error updating profile picture:", err);
-      setError(
-        err.response?.data?.message || "Failed to update profile picture"
-      );
+      console.error(err);
+      toastError("Failed to upload profile picture");
     } finally {
       setLoading(false);
     }
@@ -71,12 +76,20 @@ const ProfilePictureUploader = ({
         isDragActive ? "border-purple-800 bg-purple-100" : "border-purple-500"
       }`}
     >
-      <div className="flex flex-col sm:flex-row gap-6 items-center">
+      <div className="flex flex-col sm:flex-row gap-6 items-center relative">
         <ProfilePicture
           src={uploadedImage || user.profile.profile_picture}
           full_name={user.profile.full_name}
-          className="sm:w-20 sm:h-20 w-24 h-24"
+          className="sm:w-20 sm:h-20 w-24 h-24 relative"
         />
+        <button
+          onClick={() => updateProfilePicture("")}
+          className="absolute top-0 right-0 transform translate-x-1/2 -translate-y-1/2 bg-red-600 hover:bg-red-800 text-white rounded-full p-2 shadow-md transition-all duration-300"
+          title="Remove"
+          disabled={loading}
+        >
+          <FaTrashAlt size={16} />
+        </button>
         <div className="flex flex-col-reverse sm:flex-col gap-4">
           <div
             {...getRootProps()}

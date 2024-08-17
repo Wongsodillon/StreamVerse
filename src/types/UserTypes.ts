@@ -12,6 +12,6 @@ export type ProfileType = {
   bio: string;
   wallet_address: string;
   gender: string;
-  date_of_birth: string;
+  date_of_birth: Date;
   profile_picture: string;
 };
