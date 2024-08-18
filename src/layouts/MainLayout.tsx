@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
-import { Menu, Search, Settings, LogOut, User } from "react-feather";
+import { Menu, Search, Settings, LogOut, User, Video } from "react-feather";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -23,6 +23,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
+import ProfilePicture from "@/components/ProfilePicture";
 
 type MainLayoutProps = PropsWithChildren & {
   scrollable?: boolean;
@@ -38,9 +39,9 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
     setShowSidebar(!showSidebar);
   };
 
-  useEffect(() => {
-    console.log(`AccountID: ${accountId}, WalletInterface: ${walletInterface}`);
-  }, []);
+  // useEffect(() => {
+  //   console.log(user);
+  // }, []);
 
   const handleConnect = async () => {
     if (accountId) {
@@ -58,7 +59,7 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
         return;
       }
       await axios.post(
-        `${BASE_URL}/logout`,
+        `${BASE_URL}/auth/logout`,
         {},
         {
           headers: {
@@ -135,19 +136,30 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
               {user && (
                 <DropdownMenu>
                   <DropdownMenuTrigger>
-                    <Avatar>
-                      <AvatarImage src="https://github.com/shadcn.png" />
-                      <AvatarFallback>CN</AvatarFallback>
-                    </Avatar>
+                    <ProfilePicture
+                      src={user.profile.profile_picture}
+                      full_name={user.profile.full_name}
+                      className="w-12 h-12"
+                    />
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-48 px-2 py-2">
                     <div className="flex px-2 py-2">
-                      <p className="text-md font-bold">{user.username}</p>
+                      <p className="text-md font-bold">
+                        {user.profile.full_name}
+                      </p>
                     </div>
                     <DropdownMenuGroup>
-                      <DropdownMenuItem>
+                      <DropdownMenuItem onClick={() => navigate("/account")}>
                         <User className="mr-2 h-5 w-5" />
                         Account
+                      </DropdownMenuItem>
+                      <DropdownMenuItem
+                        onClick={() =>
+                          navigate(`/stream/${user.stream.topic_id}`)
+                        }
+                      >
+                        <Video className="mr-2 h-5 w-5" />
+                        My Channel
                       </DropdownMenuItem>
                       <DropdownMenuItem>
                         <Settings className="mr-2 h-5 w-5" />

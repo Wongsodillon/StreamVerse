@@ -22,14 +22,10 @@ const Login = ({ changePage }: { changePage: (index: number) => void }) => {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const result = await axios.post(
-        `${BASE_URL}/auth/login`,
-        {
-          email: email,
-          password: password,
-        },
-        { withCredentials: true }
-      );
+      const result = await axios.post(`${BASE_URL}/auth/login`, {
+        email: email,
+        password: password,
+      });
 
       if (result.status === 200) {
         localStorage.setItem("token", result.data.token);

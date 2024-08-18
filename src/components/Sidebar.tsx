@@ -1,5 +1,5 @@
 import { X } from "react-feather";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import SidebarLink from "./SidebarLink";
 import { Separator } from "./ui/separator";
 import ProfileStatus from "./ProfileStatus";
@@ -20,7 +20,12 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
       }
     >
       <div className="md:px-6 px-4 py-6 flex justify-between items-center">
-        <p className="text-black text-2xl font-semibold">Streaming</p>
+        <Link
+          to={"/home"}
+          className="text-black text-2xl font-bold hover:text-purple-500 transition-all duration-300 ease-linear"
+        >
+          StreamVerse
+        </Link>
         <button onClick={() => toggleShow(false)} className="lg:hidden">
           <X className="text-black" size={24} />
         </button>

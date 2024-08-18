@@ -2,7 +2,7 @@ import React from "react";
 import { Routes, Route } from "react-router-dom";
 import Categories from "@/pages/Home";
 import Trending from "@/pages/Categories";
-import Streaming from "../pages/Streaming";
+import Streaming from "../pages/Streaming/Streaming";
 
 const StreamVerse = () => {
   return (
