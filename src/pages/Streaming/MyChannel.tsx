@@ -293,13 +293,13 @@ const MyChannel = () => {
               </ScrollArea>
             )}
             {!liveStream && (
-              <div className="flex-grow flex flex-col gap-4 items-center justify-center">
+              <div className="flex-grow flex flex-col gap-4 items-center justify-center pb-16">
                 <WifiOff size={32} className="text-gray-300" />
                 <p className="text-lg text-gray-400">Chat not available</p>
               </div>
             )}
           </div>
-          {liveStream && (
+          {/* {liveStream && (
             <div className="p-3 min-h-[11.4rem] border-t bg-white ">
               <form action="">
                 <p className="text-md font-semibold mb-1 text-purple-700">
@@ -311,7 +311,7 @@ const MyChannel = () => {
                 />
               </form>
             </div>
-          )}
+          )} */}
         </div>
       </div>
     </MainLayout>

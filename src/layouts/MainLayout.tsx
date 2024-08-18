@@ -33,6 +33,7 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
   const [showSidebar, setShowSidebar] = useState(false);
   const [user, fetchUser] = useUser();
   const { accountId, walletInterface } = useWalletInterface();
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
@@ -75,6 +76,11 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
     }
   };
 
+  const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/search/${search}`);
+  };
+
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
       <Sidebar show={showSidebar} toggleShow={toggleSidebar} />
@@ -91,13 +97,15 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
               <button onClick={toggleSidebar} className="block lg:hidden">
                 <Menu className="text-darkGray" size={24} />
               </button>
-              <form action="" className="w-full">
+              <form onSubmit={onSearch} className="w-full">
                 <div className="relative">
                   <Search
                     className="hidden sm:block absolute top-1/2 left-2 transform -translate-y-1/2 text-darkGray"
                     size={20}
                   />
                   <Input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                     className="w-full bg-transparent text-lg pl-4 sm:pl-10 pr-4 focus:outline-none focus-visible:ring-0 xl:w-125 border-none"
                     placeholder="Search"
                   />

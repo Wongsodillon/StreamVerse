@@ -20,3 +20,14 @@ export type StreamType = {
   updatedAt: Date;
   user: UserType;
 };
+
+export type SearchStreamType = {
+  id: number;
+  user_id: number;
+  is_live: boolean;
+  full_name: string;
+  profile_picture: string;
+  thumbnail: string;
+  title: string;
+  topic_id: string;
+};

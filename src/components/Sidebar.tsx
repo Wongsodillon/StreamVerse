@@ -33,9 +33,9 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
       <div className="no-scrollbar overflow-y-auto flex flex-col duration-300 ease-linear">
         <nav className="py-4 px-4 lg:px-6">
           <div className="flex flex-col gap-4">
-            <SidebarLink to="/home">Home</SidebarLink>
+            <SidebarLink to="/home">For you</SidebarLink>
+            <SidebarLink to={`/my-channel`}>My Channel</SidebarLink>
             <SidebarLink to="/home/category">Category</SidebarLink>
-            <SidebarLink to="/home/trending">Trending</SidebarLink>
             <Separator />
             <Accordion type="single" collapsible className="w-full -mt-2">
               <AccordionItem value="1">

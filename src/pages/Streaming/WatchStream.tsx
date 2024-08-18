@@ -1,5 +1,4 @@
 import MainLayout from "@/layouts/MainLayout";
-import SampleVideo from "../../assets/videoplayback.mp4";
 import { WifiOff, X } from "react-feather";
 import { Download, Video, Send } from "react-feather";
 import { useEffect, useRef, useState } from "react";
@@ -8,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BASE_URL } from "@/config/constants";
+import { useNavigate } from "react-router-dom";
 import {
   Popover,
   PopoverContent,
@@ -23,17 +23,18 @@ import socket from "@/lib/webSocket";
 
 const WatchStream = () => {
   const [user, fetchUser] = useUser();
-  const { topic_id } = useParams();
-  const [streamInfo, setStreamInfo] = useState<StreamType | null>(null);
-  const [streamer, setStreamer] = useState<UserType | null>(null);
   if (!user) {
     return <div>Loading...</div>;
   }
+  const { topic_id } = useParams();
+  const [streamInfo, setStreamInfo] = useState<StreamType | null>(null);
+  const [streamer, setStreamer] = useState<UserType | null>(null);
   const [selectedGift, setSelectedGift] = useState<number | null>(null);
   const [liveStream, setLiveStream] = useState<MediaStream | null>(null);
   const [showChat, setShowChat] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const navigate = useNavigate();
 
   const toggleChat = () => {
     setShowChat(!showChat);
@@ -44,6 +45,21 @@ const WatchStream = () => {
     }
     setSelectedGift((prev) => (prev === amount ? null : amount));
   };
+  useEffect(() => {
+    const fetchStreamer = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/stream/streamer/${topic_id}`
+        );
+        setStreamInfo(response.data.streamer);
+        setStreamer(response.data.userProfile);
+      } catch (error) {
+        console.error("Error fetching streamer:", error);
+        navigate("/home");
+      }
+    };
+    fetchStreamer();
+  }, []);
 
   useEffect(() => {
     const peerConnection = new RTCPeerConnection({
@@ -61,7 +77,7 @@ const WatchStream = () => {
       if (videoRef.current) {
         videoRef.current.srcObject = event.streams[0];
       }
-      setLiveStream(event.streams[0]); // Update liveStream when a track is added
+      setLiveStream(event.streams[0]);
     };
 
     socket.emit("join-room", topic_id, "watcher");
@@ -113,22 +129,6 @@ const WatchStream = () => {
   }, [topic_id]);
 
   useEffect(() => {
-    const fetchStreamer = async () => {
-      try {
-        const response = await axios.get(
-          `${BASE_URL}/stream/streamer/${topic_id}`
-        );
-        // console.log(response.data);
-        setStreamInfo(response.data.streamer);
-        setStreamer(response.data.userProfile);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-    fetchStreamer();
-  }, []);
-
-  useEffect(() => {
     console.log(videoRef);
   }, [videoRef]);
 
@@ -159,7 +159,7 @@ const WatchStream = () => {
             <div className="flex flex-col gap-4 justify-between md:flex-row">
               <div className="flex gap-4">
                 <Avatar className="w-14 h-14">
-                  <AvatarImage src="https://github.com/shadcn.png" />
+                  <AvatarImage src={streamer?.profile.profile_picture} />
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
@@ -280,9 +280,9 @@ const WatchStream = () => {
               </ScrollArea>
             )}
             {!liveStream && (
-              <div className="flex-grow flex flex-col gap-4 items-center justify-center">
+              <div className="flex-grow flex flex-col gap-4 items-center justify-center pb-16">
                 <WifiOff size={32} className="text-gray-300" />
-                <p className="text-lg text-gray-400">Chat not available</p>
+                <p className="text-lg text-gray-400">Chat is offline</p>
               </div>
             )}
           </div>
