@@ -61,6 +61,8 @@ module.exports = {
         },
         darkPurple: "#6D43A3",
         lightYellow: "#FFB60A",
+        darkGray: "#737373",
+        black: "#161616",
       },
       fontFamily: {
         nunito: ["Nunito Sans", "sans-serif"],
