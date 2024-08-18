@@ -1,5 +1,4 @@
 import MainLayout from "@/layouts/MainLayout";
-import SampleVideo from "../../assets/videoplayback.mp4";
 import { Wifi, X } from "react-feather";
 import { Download, Video, Send, WifiOff } from "react-feather";
 import { useEffect, useRef, useState } from "react";
@@ -28,6 +27,8 @@ const MyChannel = () => {
   const [showChat, setShowChat] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const [messages, setMessages] = useState<string[]>([]);
+  const [message, setMessage] = useState("");
 
   const toggleChat = () => {
     setShowChat(!showChat);
@@ -85,7 +86,7 @@ const MyChannel = () => {
         await peerConnection.setLocalDescription(offer);
         socket.emit("offer", topic_id, offer);
       } catch (error) {
-        // console.error("Error creating or setting offer:", error);
+        console.error("Error creating or setting offer:", error);
       }
     };
 
@@ -95,7 +96,7 @@ const MyChannel = () => {
           new RTCSessionDescription(answer)
         );
       } catch (error) {
-        // console.error("Error setting remote description:", error);
+        console.error("Error setting remote description:", error);
       }
     });
 
@@ -103,9 +104,14 @@ const MyChannel = () => {
       try {
         await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
       } catch (error) {
-        // console.error("Error adding received ICE candidate:", error);
+        console.error("Error adding received ICE candidate:", error);
       }
     });
+
+    socket.on("chat", (incomingMessage) => {
+      setMessages((prevMessages) => [...prevMessages, incomingMessage]);
+    });
+
 
     socket.emit("join-room", topic_id, "streamer");
 
@@ -143,13 +149,12 @@ const MyChannel = () => {
         video: true,
       });
       setLiveStream(newStream);
-
       newStream.getTracks().forEach((track) => {
         peerConnectionRef.current?.addTrack(track, newStream);
       });
       socket.emit("stream-started", topic_id);
     } catch (error) {
-      // console.error("Error accessing screen media.", error);
+      console.error("Error accessing screen media.", error);
     }
   };
 
@@ -157,10 +162,9 @@ const MyChannel = () => {
     if (liveStream && videoRef.current) {
       videoRef.current.srcObject = liveStream;
       videoRef.current.play().catch((error) => {
-        // console.error("Error playing the video stream:", error);
+        console.error("Error playing the video stream:", error);
       });
     }
-
     return () => {
       if (liveStream) {
         liveStream.getTracks().forEach((track) => track.stop());
@@ -178,6 +182,15 @@ const MyChannel = () => {
     }
     console.log("Emitting stop-stream event with topic_id:", topic_id);
     socket.emit("stop-stream", topic_id);
+  };
+
+  
+  const handleMessageSubmit = (e:any) => {
+    e.preventDefault();
+    if (message.trim() === "") return;
+    setMessages((prevMessages) => [...prevMessages, message]);
+    socket.emit("chat", topic_id, message);
+    setMessage("");
   };
 
   return (
@@ -289,7 +302,11 @@ const MyChannel = () => {
           <div className="bg-white flex-grow flex overflow-y-auto">
             {liveStream && (
               <ScrollArea className="px-4 py-2 flex-grow">
-                {/* Messages Here */}
+                {messages.map((msg, index) => (
+                    <div key={index} className="mb-2">
+                      <div className="text-sm">{msg}</div>
+                    </div>
+                  ))}
               </ScrollArea>
             )}
             {!liveStream && (
@@ -301,16 +318,20 @@ const MyChannel = () => {
           </div>
           {liveStream && (
             <div className="p-3 min-h-[11.4rem] border-t bg-white ">
-              <form action="">
-                <p className="text-md font-semibold mb-1 text-purple-700">
-                  Send Chat
-                </p>
-                <Input
-                  placeholder="Type your message"
-                  className="border focus:ring-4 focus:ring-purple-500 focus:border-purple-500"
-                />
-              </form>
-            </div>
+            <p className="text-md font-semibold mb-1 text-purple-700">Send Chat</p>
+            <form onSubmit={handleMessageSubmit} className="flex gap-2">
+              <Input
+                placeholder="Type a message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-grow"
+              />
+              <Button type="submit" className="flex items-center gap-1">
+                <Send size={16} />
+                Send
+              </Button>
+            </form>
+          </div>
           )}
         </div>
       </div>
