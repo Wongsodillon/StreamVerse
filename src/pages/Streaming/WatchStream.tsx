@@ -1,22 +1,40 @@
 import MainLayout from "@/layouts/MainLayout";
-import SampleVideo from "../assets/videoplayback.mp4";
-import { X } from "react-feather";
+import SampleVideo from "../../assets/videoplayback.mp4";
+import { WifiOff, X } from "react-feather";
 import { Download, Video, Send } from "react-feather";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
+import { BASE_URL } from "@/config/constants";
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
 import GiftSelectionCard from "@/components/GiftSelectionCard";
+import { useUser } from "@/context/UserContext";
+import axios from "axios";
+import { useParams } from "react-router-dom";
+import { StreamType } from "@/types/StreamTypes";
+import { UserType } from "@/types/UserTypes";
+import socket from "@/lib/webSocket";
 
 const WatchStream = () => {
-  const [showChat, setShowChat] = useState(true);
+  const [user, fetchUser] = useUser();
+  const { topic_id } = useParams();
+  const [streamInfo, setStreamInfo] = useState<StreamType | null>(null);
+  const [streamer, setStreamer] = useState<UserType | null>(null);
+  if (!user) {
+    return <div>Loading...</div>;
+  }
   const [selectedGift, setSelectedGift] = useState<number | null>(null);
+  const [liveStream, setLiveStream] = useState<MediaStream | null>(null);
+  const [showChat, setShowChat] = useState(true);
+  const videoRef = useRef<HTMLVideoElement | null>(null);
+  const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+
   const toggleChat = () => {
     setShowChat(!showChat);
   };
@@ -26,18 +44,117 @@ const WatchStream = () => {
     }
     setSelectedGift((prev) => (prev === amount ? null : amount));
   };
+
+  useEffect(() => {
+    const peerConnection = new RTCPeerConnection({
+      iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
+    });
+    peerConnectionRef.current = peerConnection;
+
+    peerConnection.onicecandidate = (event) => {
+      if (event.candidate) {
+        socket.emit("ice-candidate", topic_id, event.candidate);
+      }
+    };
+
+    peerConnection.ontrack = (event) => {
+      if (videoRef.current) {
+        videoRef.current.srcObject = event.streams[0];
+      }
+      setLiveStream(event.streams[0]); // Update liveStream when a track is added
+    };
+
+    socket.emit("join-room", topic_id, "watcher");
+
+    socket.on("offer", async (offer) => {
+      try {
+        if (peerConnectionRef.current) {
+          await peerConnectionRef.current.setRemoteDescription(
+            new RTCSessionDescription(offer)
+          );
+          const answer = await peerConnectionRef.current.createAnswer();
+          await peerConnectionRef.current.setLocalDescription(answer);
+          socket.emit("answer", topic_id, answer);
+        }
+      } catch (error) {
+        console.error("Error handling offer:", error);
+      }
+    });
+
+    socket.on("ice-candidate", async (candidate) => {
+      try {
+        if (
+          peerConnectionRef.current &&
+          peerConnectionRef.current.signalingState !== "closed"
+        ) {
+          await peerConnectionRef.current.addIceCandidate(
+            new RTCIceCandidate(candidate)
+          );
+        }
+      } catch (error) {
+        console.error("Error adding received ICE candidate:", error);
+      }
+    });
+
+    socket.on("stop-stream", async () => {
+      videoRef.current = null;
+    });
+
+    return () => {
+      peerConnection.close();
+      peerConnectionRef.current = null;
+      socket.off("user-connected");
+      socket.off("user-disconnected");
+      socket.off("offer");
+      socket.off("ice-candidate");
+      socket.off("stream-started");
+      socket.emit("leave-room", topic_id);
+    };
+  }, [topic_id]);
+
+  useEffect(() => {
+    const fetchStreamer = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/stream/streamer/${topic_id}`
+        );
+        // console.log(response.data);
+        setStreamInfo(response.data.streamer);
+        setStreamer(response.data.userProfile);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchStreamer();
+  }, []);
+
+  useEffect(() => {
+    console.log(videoRef);
+  }, [videoRef]);
+
   return (
     <MainLayout scrollable={false}>
       <div className="h-screen flex relative w-full overflow-y-hidden">
         <div className="flex flex-col w-full overflow-y-auto no-scrollbar">
           <video
-            src={SampleVideo}
+            ref={videoRef}
             autoPlay
-            loop
             muted
             className="w-full object-cover"
           ></video>
-
+          {/* {videoRef.current ? (
+            <video
+              ref={videoRef}
+              autoPlay
+              muted
+              className="w-full object-cover"
+            ></video>
+          ) : (
+            <div className="flex flex-col gap-4 items-center justify-center w-full bg-black min-h-[32rem]">
+              <WifiOff size={48} className="text-gray-200" />
+              <p className="text-gray-200 text-2xl">You are offline</p>
+            </div>
+          )} */}
           <div className="min-h-full flex flex-col p-6 gap-4">
             <div className="flex flex-col gap-4 justify-between md:flex-row">
               <div className="flex gap-4">
@@ -46,7 +163,9 @@ const WatchStream = () => {
                   <AvatarFallback>CN</AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col">
-                  <p className="text-xl font-bold">propanemethanol</p>
+                  <p className="text-xl font-bold">
+                    {streamer?.profile.full_name}
+                  </p>
                   <p className="font-semibold">12000 Followers</p>
                 </div>
               </div>
@@ -68,7 +187,9 @@ const WatchStream = () => {
                           <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
                         <div className="flex flex-col">
-                          <p className="text-xl font-bold">propanemethanol</p>
+                          <p className="text-xl font-bold">
+                            {streamer?.profile.full_name}
+                          </p>
                           <p className="font-semibold">12000 Followers</p>
                         </div>
                       </div>
@@ -109,10 +230,7 @@ const WatchStream = () => {
               </div>
             </div>
             <div className="flex flex-col gap-2">
-              <p className="text-xl font-semibold">
-                (ENG) Nigma Galaxy v Team Spirit | Bo3 | CDL S1: Snow Ruyi |
-                Playoffs |
-              </p>
+              <p className="text-xl font-semibold">{streamInfo?.title}</p>
               <div className="flex justify-between">
                 <div className="flex gap-4 items-center text-darkPurple">
                   <Video size={24} />
@@ -122,18 +240,12 @@ const WatchStream = () => {
               </div>
               <br />
               <div className="flex flex-col gap-4">
-                <p className="font-bold text-xl">About James Dillon</p>
+                <p className="font-bold text-xl">
+                  About {streamer?.profile.full_name}
+                </p>
                 <div className="p-4 border-2 border-purple-500 rounded-sm bg-white">
                   <p>
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Similique vel facere expedita dolor nobis ducimus ullam
-                    incidunt beatae perferendis sapiente voluptate labore ea
-                    reprehenderit, provident fuga nemo consequuntur cum
-                    adipisci. Lorem ipsum dolor sit amet, consectetur
-                    adipisicing elit. Reiciendis, odio dolorem veritatis quos
-                    repellendus maxime animi perferendis aliquid quaerat
-                    corporis pariatur expedita? Dolore, aliquid dolorum! Quasi,
-                    laborum! Quam, totam ad?
+                    {streamer?.profile.bio || "No bio available for this user"}
                   </p>
                 </div>
               </div>
@@ -161,45 +273,32 @@ const WatchStream = () => {
               onClick={() => setShowChat(false)}
             />
           </div>
-          <div className="bg-white overflow-y-auto">
-            <ScrollArea className="px-4 py-2 overflow-y-auto">
-              <p>Goooooo</p>
-              <p>Goooooo</p>
-              <p>Vamoss</p>
-              <p>Vamoss</p>
-              <p>Goooooo</p>
-              <p>Goooooo</p>
-              <p>Vamoss</p>
-              <p>Vamoss</p>
-              <p>Goooooo</p>
-              <p>Goooooo</p>
-              <p>Vamoss</p>
-              <p>Vamoss</p>
-              <p>Goooooo</p>
-              <p>Goooooo</p>
-              <p>Vamoss</p>
-              <p>Vamoss</p>
-              <p>Goooooo</p>
-              <p>Goooooo</p>
-              <p>Vamoss</p>
-              <p>Vamoss</p>
-              <p>Goooooo</p>
-              <p>Goooooo</p>
-              <p>Vamoss</p>
-              <p>Vamoss</p>
-            </ScrollArea>
+          <div className="bg-white flex flex-grow overflow-y-auto">
+            {liveStream && (
+              <ScrollArea className="px-4 py-2 flex-grow">
+                {/* Messages Here */}
+              </ScrollArea>
+            )}
+            {!liveStream && (
+              <div className="flex-grow flex flex-col gap-4 items-center justify-center">
+                <WifiOff size={32} className="text-gray-300" />
+                <p className="text-lg text-gray-400">Chat not available</p>
+              </div>
+            )}
           </div>
-          <div className="p-3 min-h-[11.25rem] border-t bg-white ">
-            <form action="">
-              <p className="text-md font-semibold mb-1 text-purple-700">
-                Send Chat
-              </p>
-              <Input
-                placeholder="Type your message"
-                className="border focus:ring-4 focus:ring-purple-500 focus:border-purple-500"
-              />
-            </form>
-          </div>
+          {liveStream && (
+            <div className="p-3 min-h-[11.25rem] border-t bg-white ">
+              <form action="">
+                <p className="text-md font-semibold mb-1 text-purple-700">
+                  Send Chat
+                </p>
+                <Input
+                  placeholder="Type your message"
+                  className="border focus:ring-4 focus:ring-purple-500 focus:border-purple-500"
+                />
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </MainLayout>

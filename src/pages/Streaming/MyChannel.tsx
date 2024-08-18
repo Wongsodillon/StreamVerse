@@ -1,6 +1,6 @@
 import MainLayout from "@/layouts/MainLayout";
 import SampleVideo from "../../assets/videoplayback.mp4";
-import { X } from "react-feather";
+import { Wifi, X } from "react-feather";
 import { Download, Video, Send, WifiOff } from "react-feather";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -85,7 +85,7 @@ const MyChannel = () => {
         await peerConnection.setLocalDescription(offer);
         socket.emit("offer", topic_id, offer);
       } catch (error) {
-        console.error("Error creating or setting offer:", error);
+        // console.error("Error creating or setting offer:", error);
       }
     };
 
@@ -95,7 +95,7 @@ const MyChannel = () => {
           new RTCSessionDescription(answer)
         );
       } catch (error) {
-        console.error("Error setting remote description:", error);
+        // console.error("Error setting remote description:", error);
       }
     });
 
@@ -103,7 +103,7 @@ const MyChannel = () => {
       try {
         await peerConnection.addIceCandidate(new RTCIceCandidate(candidate));
       } catch (error) {
-        console.error("Error adding received ICE candidate:", error);
+        // console.error("Error adding received ICE candidate:", error);
       }
     });
 
@@ -149,7 +149,7 @@ const MyChannel = () => {
       });
       socket.emit("stream-started", topic_id);
     } catch (error) {
-      console.error("Error accessing screen media.", error);
+      // console.error("Error accessing screen media.", error);
     }
   };
 
@@ -157,7 +157,7 @@ const MyChannel = () => {
     if (liveStream && videoRef.current) {
       videoRef.current.srcObject = liveStream;
       videoRef.current.play().catch((error) => {
-        console.error("Error playing the video stream:", error);
+        // console.error("Error playing the video stream:", error);
       });
     }
 
@@ -192,7 +192,7 @@ const MyChannel = () => {
               className="w-full object-cover"
             ></video>
           ) : (
-            <div className="flex flex-col gap-4 items-center justify-center w-full bg-black min-h-[30rem]">
+            <div className="flex flex-col gap-4 items-center justify-center w-full bg-black min-h-[32rem]">
               <WifiOff size={48} className="text-gray-200" />
               <p className="text-gray-200 text-2xl">You are offline</p>
               <Button className="px-6 py-4 text-md" onClick={startStream}>
@@ -287,21 +287,31 @@ const MyChannel = () => {
             />
           </div>
           <div className="bg-white flex-grow flex overflow-y-auto">
-            <ScrollArea className="px-4 py-2 flex-grow">
-              {/* Messages Here */}
-            </ScrollArea>
+            {liveStream && (
+              <ScrollArea className="px-4 py-2 flex-grow">
+                {/* Messages Here */}
+              </ScrollArea>
+            )}
+            {!liveStream && (
+              <div className="flex-grow flex flex-col gap-4 items-center justify-center">
+                <WifiOff size={32} className="text-gray-300" />
+                <p className="text-lg text-gray-400">Chat not available</p>
+              </div>
+            )}
           </div>
-          <div className="p-3 min-h-[11.4rem] border-t bg-white ">
-            <form action="">
-              <p className="text-md font-semibold mb-1 text-purple-700">
-                Send Chat
-              </p>
-              <Input
-                placeholder="Type your message"
-                className="border focus:ring-4 focus:ring-purple-500 focus:border-purple-500"
-              />
-            </form>
-          </div>
+          {liveStream && (
+            <div className="p-3 min-h-[11.4rem] border-t bg-white ">
+              <form action="">
+                <p className="text-md font-semibold mb-1 text-purple-700">
+                  Send Chat
+                </p>
+                <Input
+                  placeholder="Type your message"
+                  className="border focus:ring-4 focus:ring-purple-500 focus:border-purple-500"
+                />
+              </form>
+            </div>
+          )}
         </div>
       </div>
     </MainLayout>

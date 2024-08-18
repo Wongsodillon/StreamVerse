@@ -1,6 +1,7 @@
 import { useUser } from "@/context/UserContext";
 import { useParams } from "react-router-dom";
 import MyChannel from "./MyChannel";
+import WatchStream from "./WatchStream";
 
 const Streaming = () => {
   const { topic_id } = useParams();
@@ -17,7 +18,7 @@ const Streaming = () => {
   if (user.stream.topic_id === topic_id) {
     return <MyChannel />;
   } else {
-    return <div>Streaming page</div>;
+    return <WatchStream />;
   }
 };
 

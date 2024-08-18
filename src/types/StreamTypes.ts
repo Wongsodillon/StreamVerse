@@ -1,3 +1,5 @@
+import { UserType } from "./UserTypes";
+
 export type Stream = {
   id: string;
   title: string;
@@ -16,4 +18,5 @@ export type StreamType = {
   topic_id: string;
   createdAt: Date;
   updatedAt: Date;
+  user: UserType;
 };
