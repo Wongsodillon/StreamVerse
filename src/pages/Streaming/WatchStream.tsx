@@ -34,6 +34,8 @@ const WatchStream = () => {
   const [showChat, setShowChat] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
+  const [messages, setMessages] = useState<string[]>([]);
+  const [message, setMessage] = useState("");
 
   const toggleChat = () => {
     setShowChat(!showChat);
@@ -49,6 +51,9 @@ const WatchStream = () => {
     const peerConnection = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
+
+    
+
     peerConnectionRef.current = peerConnection;
 
     peerConnection.onicecandidate = (event) => {
@@ -96,6 +101,10 @@ const WatchStream = () => {
       }
     });
 
+    socket.on("chat", (incomingMessage) => {
+      setMessages((prevMessages) => [...prevMessages, incomingMessage]);
+    });
+
     socket.on("stop-stream", async () => {
       videoRef.current = null;
     });
@@ -131,6 +140,14 @@ const WatchStream = () => {
   useEffect(() => {
     console.log(videoRef);
   }, [videoRef]);
+
+  const handleMessageSubmit = (e:any) => {
+    e.preventDefault();
+    if (message.trim() === "") return;
+    setMessages((prevMessages) => [...prevMessages, message]);
+    socket.emit("chat", topic_id, message);
+    setMessage("");
+  };
 
   return (
     <MainLayout scrollable={false}>
@@ -276,7 +293,11 @@ const WatchStream = () => {
           <div className="bg-white flex flex-grow overflow-y-auto">
             {liveStream && (
               <ScrollArea className="px-4 py-2 flex-grow">
-                {/* Messages Here */}
+                {messages.map((msg, index) => (
+                    <div key={index} className="mb-2">
+                      <div className="text-sm">{msg}</div>
+                    </div>
+                  ))}
               </ScrollArea>
             )}
             {!liveStream && (
@@ -287,17 +308,21 @@ const WatchStream = () => {
             )}
           </div>
           {liveStream && (
-            <div className="p-3 min-h-[11.25rem] border-t bg-white ">
-              <form action="">
-                <p className="text-md font-semibold mb-1 text-purple-700">
-                  Send Chat
-                </p>
-                <Input
-                  placeholder="Type your message"
-                  className="border focus:ring-4 focus:ring-purple-500 focus:border-purple-500"
-                />
-              </form>
-            </div>
+            <div className="p-3 min-h-[11.4rem] border-t bg-white ">
+            <p className="text-md font-semibold mb-1 text-purple-700">Send Chat</p>
+            <form onSubmit={handleMessageSubmit} className="flex gap-2">
+              <Input
+                placeholder="Type a message"
+                value={message}
+                onChange={(e) => setMessage(e.target.value)}
+                className="flex-grow"
+              />
+              <Button type="submit" className="flex items-center gap-1">
+                <Send size={16} />
+                Send
+              </Button>
+            </form>
+          </div>
           )}
         </div>
       </div>

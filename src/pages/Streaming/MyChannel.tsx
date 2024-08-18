@@ -317,7 +317,7 @@ const MyChannel = () => {
             )}
           </div>
           {liveStream && (
-            <div className="p-3 min-h-[11.4rem] border-t bg-white ">
+          <div className="p-3 min-h-[11.4rem] border-t bg-white ">
             <p className="text-md font-semibold mb-1 text-purple-700">Send Chat</p>
             <form onSubmit={handleMessageSubmit} className="flex gap-2">
               <Input
