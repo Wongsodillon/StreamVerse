@@ -45,7 +45,9 @@ const WatchStream = () => {
   const [donationMessage, setDonationMessage] = useState("");
   const [senderAccountId, setSenderAccountId] = useState("");
   const { toastSuccess, toastError } = useToaster();
+  const [isFollowed, setIsFollowed] = useState(false);
   const [donateLoading, setDonateLoading] = useState(false);
+  const [followLoading, setFollowLoading] = useState(false);
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
@@ -56,18 +58,30 @@ const WatchStream = () => {
   };
   const handleGiftChange = (amount: number) => {
     if (amount >= 1000000) {
+      toastError("Maximum gift amount is 1,000,000 HBAR");
       return;
     }
     setDonationAmount(amount.toString());
     setSelectedGift((prev) => (prev === amount ? null : amount));
   };
+
   useEffect(() => {
     const fetchStreamer = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        console.error("No token found");
+        return;
+      }
       try {
         const response = await axios.get(
-          `${BASE_URL}/stream/streamer/${topic_id}`
+          `${BASE_URL}/stream/streamer/${topic_id}`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
         );
+        setIsFollowed(response.data.is_followed);
         setStreamInfo(response.data.streamer);
+        console.log(response.data.userProfile);
         setStreamer(response.data.userProfile);
       } catch (error) {
         console.error("Error fetching streamer:", error);
@@ -236,6 +250,61 @@ const WatchStream = () => {
     }
   };
 
+  const handleFollow = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
+
+    try {
+      setFollowLoading(true);
+      const response = await axios.post(
+        `${BASE_URL}/follower/${user.id}/follow`,
+        {
+          followingId: streamer?.id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setIsFollowed((prev) => !prev);
+      toastSuccess(response.data.message);
+    } catch (error: any) {
+      console.error("Error during follow:", error);
+      toastError(error.response?.data?.error || "Failed to follow streamer");
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
+  const handleUnfollow = async () => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      console.error("No token found");
+      return;
+    }
+    try {
+      setFollowLoading(true);
+      const response = await axios.post(
+        `${BASE_URL}/follower/${user.id}/unfollow`,
+        {
+          followingId: streamer?.id,
+        },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      setIsFollowed((prev) => !prev);
+      toastSuccess(response.data.message);
+    } catch (error: any) {
+      console.error("Error during follow:", error);
+      toastError(error.response?.data?.error || "Failed to follow streamer");
+    } finally {
+      setFollowLoading(false);
+    }
+  };
+
   return (
     <MainLayout scrollable={false}>
       <div className="h-screen flex relative w-full overflow-y-hidden">
@@ -262,21 +331,39 @@ const WatchStream = () => {
           <div className="min-h-full flex flex-col p-6 gap-4">
             <div className="flex flex-col gap-4 justify-between md:flex-row">
               <div className="flex gap-4">
-                <Avatar className="w-14 h-14">
-                  <AvatarImage src={streamer?.profile.profile_picture} />
-                  <AvatarFallback>CN</AvatarFallback>
-                </Avatar>
+                <ProfilePicture
+                  src={streamer?.profile.profile_picture}
+                  full_name={streamer?.profile.full_name}
+                />
                 <div className="flex flex-col">
                   <p className="text-xl font-bold">
                     {streamer?.profile.full_name}
                   </p>
-                  <p className="font-semibold">12000 Followers</p>
+                  <p className="font-semibold">
+                    {streamer?.followerCount} Followers
+                  </p>
                 </div>
               </div>
               <div className="flex gap-4">
-                <Button className="px-8 text-lg" variant={"secondary"}>
-                  Follow
-                </Button>
+                {isFollowed ? (
+                  <Button
+                    disabled={followLoading}
+                    onClick={handleUnfollow}
+                    className="px-8 text-lg"
+                    variant={"secondary"}
+                  >
+                    Unfollow
+                  </Button>
+                ) : (
+                  <Button
+                    disabled={followLoading}
+                    onClick={handleFollow}
+                    className="px-8 text-lg"
+                    variant={"secondary"}
+                  >
+                    Follow
+                  </Button>
+                )}
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button className="px-12 text-lg" variant={"outline"}>
@@ -295,7 +382,9 @@ const WatchStream = () => {
                           <p className="text-xl font-bold">
                             {streamer?.profile.full_name}
                           </p>
-                          <p className="font-semibold">12000 Followers</p>
+                          <p className="font-semibold">
+                            {streamer?.followerCount} Followers
+                          </p>
                         </div>
                       </div>
                       <ScrollArea className="px-6 pb-6">
@@ -385,7 +474,7 @@ const WatchStream = () => {
         </div>
         <div
           className={
-            "flex flex-col min-w-72 h-screen relative duration-200 bg-white ease-linear border-l  " +
+            "flex flex-col max-w-64 h-screen relative duration-200 bg-white ease-linear border-l  " +
             (showChat ? "" : "hidden")
           }
         >

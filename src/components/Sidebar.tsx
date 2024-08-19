@@ -5,6 +5,7 @@ import { Separator } from "./ui/separator";
 import ProfileStatus from "./ProfileStatus";
 import { Accordion, AccordionContent, AccordionTrigger } from "./ui/accordion";
 import { AccordionItem } from "@radix-ui/react-accordion";
+import { useUser } from "@/context/UserContext";
 
 type SidebarProps = {
   show?: boolean;
@@ -12,6 +13,8 @@ type SidebarProps = {
 };
 
 const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
+  const [user, fetchUser] = useUser();
+
   return (
     <aside
       className={
@@ -34,7 +37,11 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
         <nav className="py-4 px-4 lg:px-6">
           <div className="flex flex-col gap-4">
             <SidebarLink to="/home">For you</SidebarLink>
-            <SidebarLink to={`/my-channel`}>My Channel</SidebarLink>
+            {user && (
+              <SidebarLink to={`/stream/${user.stream.topic_id}`}>
+                My Channel
+              </SidebarLink>
+            )}
             <SidebarLink to="/home/category">Category</SidebarLink>
             {/* <SidebarLink to="/home/trending">Trending</SidebarLink> */}
             <Separator />

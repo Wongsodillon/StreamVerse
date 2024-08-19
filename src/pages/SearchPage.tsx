@@ -19,7 +19,7 @@ const SearchPage = () => {
     const fetchStreams = async () => {
       setLoading(true);
       try {
-        await new Promise((resolve) => setTimeout(resolve, 1000)); // test delay for skeleton
+        // await new Promise((resolve) => setTimeout(resolve, 1000));
         const response = await axios.get(`${BASE_URL}/stream/search/${search}`);
         setStreams(response.data);
       } catch (error) {

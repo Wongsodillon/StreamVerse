@@ -15,7 +15,9 @@ const ProfilePicture = ({
   return (
     <Avatar className={className}>
       <AvatarImage src={src} alt="" />
-      <AvatarFallback>{getInitials(full_name)}</AvatarFallback>
+      <AvatarFallback className="bg-purple-300">
+        {getInitials(full_name)}
+      </AvatarFallback>
     </Avatar>
   );
 };

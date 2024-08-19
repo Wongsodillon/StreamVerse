@@ -112,7 +112,6 @@ const MyChannel = () => {
       setMessages((prevMessages) => [...prevMessages, incomingMessage]);
     });
 
-
     socket.emit("join-room", topic_id, "streamer");
 
     socket.on("user-connected", ({ id, role }) => {
@@ -184,8 +183,7 @@ const MyChannel = () => {
     socket.emit("stop-stream", topic_id);
   };
 
-  
-  const handleMessageSubmit = (e:any) => {
+  const handleMessageSubmit = (e: any) => {
     e.preventDefault();
     if (message.trim() === "") return;
     setMessages((prevMessages) => [...prevMessages, message]);
@@ -226,7 +224,7 @@ const MyChannel = () => {
                 <div className="flex flex-col">
                   <p className="text-xl font-bold">{user.profile.full_name}</p>
                   <p className="font-semibold text-darkPurple">
-                    12000 Followers
+                    {user.followerCount} Followers
                   </p>
                 </div>
                 {liveStream && (
@@ -287,7 +285,7 @@ const MyChannel = () => {
         </div>
         <div
           className={
-            "flex flex-col min-w-64 h-screen relative duration-200 bg-white ease-linear border-l  " +
+            "flex flex-col max-w-64 h-screen relative duration-200 bg-white ease-linear border-l  " +
             (showChat ? "" : "hidden")
           }
         >
@@ -301,22 +299,34 @@ const MyChannel = () => {
           </div>
           <div className="bg-white overflow-x-auto">
             <div className="flex space-x-2 p-2">
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
             </div>
           </div>
           <div className="bg-white flex-grow flex overflow-y-auto">
             {liveStream && (
               <ScrollArea className="px-4 py-2 flex-grow">
                 {messages.map((msg, index) => (
-                    <div key={index} className="mb-2">
-                      <div className="text-sm">{msg}</div>
-                    </div>
-                  ))}
+                  <div key={index} className="mb-2">
+                    <div className="text-sm">{msg}</div>
+                  </div>
+                ))}
               </ScrollArea>
             )}
             {!liveStream && (
@@ -326,23 +336,6 @@ const MyChannel = () => {
               </div>
             )}
           </div>
-          {liveStream && (
-          <div className="p-3 min-h-[11.4rem] border-t bg-white ">
-            <p className="text-md font-semibold mb-1 text-purple-700">Send Chat</p>
-            <form onSubmit={handleMessageSubmit} className="flex gap-2">
-              <Input
-                placeholder="Type a message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="flex-grow"
-              />
-              <Button type="submit" className="flex items-center gap-1">
-                <Send size={16} />
-                Send
-              </Button>
-            </form>
-          </div>
-          )}
         </div>
       </div>
     </MainLayout>

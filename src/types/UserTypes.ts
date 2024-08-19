@@ -7,6 +7,7 @@ export type UserType = {
   hederaAccountId: string;
   profile: ProfileType;
   stream: StreamType;
+  followerCount: number;
 };
 
 export type ProfileType = {
