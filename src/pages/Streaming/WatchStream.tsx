@@ -20,10 +20,12 @@ import { useParams } from "react-router-dom";
 import { StreamType } from "@/types/StreamTypes";
 import { UserType } from "@/types/UserTypes";
 import socket from "@/lib/webSocket";
-import { jwtDecode } from "jwt-decode";
+import { useToaster } from "@/context/ToastContext";
+import ProfilePicture from "@/components/ProfilePicture";
+import { set } from "date-fns";
 
 const WatchStream = () => {
-  const [user, fetchUser] = useUser();
+  const [user, fetchUser, balance, fetchBalance] = useUser();
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -42,7 +44,8 @@ const WatchStream = () => {
   const [donationAmount, setDonationAmount] = useState("");
   const [donationMessage, setDonationMessage] = useState("");
   const [senderAccountId, setSenderAccountId] = useState("");
-  const [balance, setBalance] = useState(0);
+  const { toastSuccess, toastError } = useToaster();
+  const [donateLoading, setDonateLoading] = useState(false);
   const [notification, setNotification] = useState<{
     type: "success" | "error";
     message: string;
@@ -168,52 +171,6 @@ const WatchStream = () => {
     setMessage("");
   };
 
-  useEffect(() => {
-    const fetchAccountData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-
-        const decodedToken = jwtDecode<{ id: string }>(token);
-        const userId = decodedToken.id;
-
-        const accountIdResponse = await axios.get(
-          `${BASE_URL}/account/account-id`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        if (accountIdResponse.data.hederaAccountId) {
-          fetchBalance(token, accountIdResponse.data.hederaAccountId);
-        }
-      } catch (error) {
-        console.error("Error fetching account data:", error);
-      }
-    };
-
-    const fetchBalance = async (token: string, accountId: string) => {
-      try {
-        const response = await axios.get(`${BASE_URL}/account/balance`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-
-        let balanceData = response.data.balance;
-        if (typeof balanceData === "object" && balanceData !== null) {
-          balanceData =
-            Number(balanceData.low) + Number(balanceData.high) * 2 ** 32;
-        }
-
-        setBalance(balanceData);
-      } catch (error) {
-        console.error("Error fetching balance:", error);
-        setBalance(0);
-      }
-    };
-
-    fetchAccountData();
-  }, []);
-
   function formatBalance(balance: number): string {
     if (balance >= 1e9) {
       return (balance / 1e9).toFixed(1).replace(/\.0$/, "") + "B"; // Billions
@@ -231,6 +188,7 @@ const WatchStream = () => {
     e: React.FormEvent<HTMLFormElement>
   ): Promise<void> => {
     e.preventDefault();
+
     const token = localStorage.getItem("token");
 
     if (!token) {
@@ -239,8 +197,8 @@ const WatchStream = () => {
     }
 
     try {
+      setDonateLoading(true);
       console.log("Sender Account ID:", user.hederaAccountId);
-
       const streamResponse = await axios.get<{ receiverAccountId: string }>(
         `${BASE_URL}/stream/${topic_id}/receiver`,
         {
@@ -264,13 +222,17 @@ const WatchStream = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
+      toastSuccess(response.data.message);
       setDonationMessage(response.data.message);
+      fetchBalance();
     } catch (error: any) {
       console.error("Error during donation:", error);
       setDonationMessage(
         error.response?.data?.error || "Failed to process donation"
       );
+      toastError(error.response?.data?.error || "Failed to process donation");
+    } finally {
+      setDonateLoading(false);
     }
   };
 
@@ -324,10 +286,11 @@ const WatchStream = () => {
                   <PopoverContent className="w-[22rem] p-0">
                     <div className="flex flex-col gap-4 h-96">
                       <div className="flex gap-4 items-center px-6 pt-6">
-                        <Avatar className="w-14 h-14">
-                          <AvatarImage src="https://github.com/shadcn.png" />
-                          <AvatarFallback>CN</AvatarFallback>
-                        </Avatar>
+                        <ProfilePicture
+                          src={streamer?.profile.profile_picture}
+                          full_name={streamer?.profile.full_name}
+                          className="w-12 h-12"
+                        />
                         <div className="flex flex-col">
                           <p className="text-xl font-bold">
                             {streamer?.profile.full_name}
@@ -368,6 +331,7 @@ const WatchStream = () => {
                               className="border border-input w-full"
                             />
                             <Button
+                              disabled={donateLoading}
                               type="submit"
                               className="px-4 text-lg gap-4 max-w-40 text-md"
                               variant={"secondary"}
@@ -375,11 +339,11 @@ const WatchStream = () => {
                               Donate <Send size={18} />
                             </Button>
                           </form>
-                          {donationMessage && (
+                          {/* {donationMessage && (
                             <p className="text-green-600 mt-2">
                               {donationMessage}
                             </p>
-                          )}
+                          )} */}
                         </div>
                       </ScrollArea>
                     </div>

@@ -2,14 +2,14 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getInitials } from "@/lib/utils";
 
 type ProfilePictureProps = {
-  src: string;
-  full_name: string;
+  src?: string;
+  full_name?: string;
   className?: string;
 };
 
 const ProfilePicture = ({
   src,
-  full_name,
+  full_name = "",
   className = "",
 }: ProfilePictureProps) => {
   return (
