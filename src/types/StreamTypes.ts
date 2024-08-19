@@ -31,3 +31,9 @@ export type SearchStreamType = {
   title: string;
   topic_id: string;
 };
+
+export type ChatMessageType = {
+  fullName: string;
+  content: string;
+  timeStamp: string;
+};

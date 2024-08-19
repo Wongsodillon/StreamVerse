@@ -68,18 +68,9 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
       if (!token) {
         return;
       }
-      await axios.post(
-        `${BASE_URL}/auth/logout`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
       localStorage.removeItem("token");
       fetchUser();
+      navigate("/home");
     } catch (error: any) {
       console.log("Error logging out:", error);
     }
@@ -171,16 +162,14 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                       className="w-12 h-12"
                     />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-64 px-2 py-2">
+                  <DropdownMenuContent className="w-48 px-2 py-2">
                     <div className="flex px-2 py-2">
                       <p className="text-md font-bold">
                         {user.profile.full_name}
                       </p>
                     </div>
                     <div className="flex px-2 pb-2">
-                      <p className="text-sm">
-                        Balance: {formatBalance(balance)} HBAR
-                      </p>
+                      <p className="text-sm">Balance: {balance}</p>
                     </div>
                     <DropdownMenuSeparator />
                     <DropdownMenuGroup>

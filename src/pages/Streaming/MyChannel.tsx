@@ -1,10 +1,9 @@
 import MainLayout from "@/layouts/MainLayout";
 import { Wifi, X } from "react-feather";
-import { Download, Video, Send, WifiOff } from "react-feather";
+import { Download, Video, WifiOff } from "react-feather";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
 import { useDropzone } from "react-dropzone";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useUser } from "@/context/UserContext";
 import ProfilePicture from "@/components/ProfilePicture";
@@ -15,6 +14,7 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
 import socket from "@/lib/webSocket";
+import { ChatMessageType } from "@/types/StreamTypes";
 
 const MyChannel = () => {
   const [user, fetchUser] = useUser();
@@ -27,7 +27,7 @@ const MyChannel = () => {
   const [showChat, setShowChat] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [message, setMessage] = useState("");
 
   const toggleChat = () => {
@@ -109,6 +109,7 @@ const MyChannel = () => {
     });
 
     socket.on("chat", (incomingMessage) => {
+      console.log(incomingMessage);
       setMessages((prevMessages) => [...prevMessages, incomingMessage]);
     });
 
@@ -139,7 +140,7 @@ const MyChannel = () => {
       title: title,
       thumbnail: uploadedImage,
       topic_id: topic_id,
-      stream_url: `https://localhost:5173/stream/${topic_id}`,
+      stream_url: topic_id,
     });
     console.log(response.data);
     try {
@@ -181,14 +182,6 @@ const MyChannel = () => {
     }
     console.log("Emitting stop-stream event with topic_id:", topic_id);
     socket.emit("stop-stream", topic_id);
-  };
-
-  const handleMessageSubmit = (e: any) => {
-    e.preventDefault();
-    if (message.trim() === "") return;
-    setMessages((prevMessages) => [...prevMessages, message]);
-    socket.emit("chat", topic_id, message);
-    setMessage("");
   };
 
   return (
@@ -285,7 +278,7 @@ const MyChannel = () => {
         </div>
         <div
           className={
-            "flex flex-col max-w-64 h-screen relative duration-200 bg-white ease-linear border-l  " +
+            "flex flex-col max-w-72 w-72 h-screen relative duration-200 bg-white ease-linear border-l  " +
             (showChat ? "" : "hidden")
           }
         >
@@ -297,7 +290,7 @@ const MyChannel = () => {
               onClick={() => setShowChat(false)}
             />
           </div>
-          <div className="bg-white overflow-x-auto">
+          {/* <div className="bg-white overflow-x-auto">
             <div className="flex space-x-2 p-2">
               <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
                 Marco
@@ -318,13 +311,13 @@ const MyChannel = () => {
                 Marco
               </div>
             </div>
-          </div>
+          </div> */}
           <div className="bg-white flex-grow flex overflow-y-auto">
             {liveStream && (
               <ScrollArea className="px-4 py-2 flex-grow">
-                {messages.map((msg, index) => (
-                  <div key={index} className="mb-2">
-                    <div className="text-sm">{msg}</div>
+                {messages.map((message, index) => (
+                  <div key={index}>
+                    <strong>{message.fullName}:</strong> {message.content}
                   </div>
                 ))}
               </ScrollArea>

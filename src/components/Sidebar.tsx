@@ -6,14 +6,38 @@ import ProfileStatus from "./ProfileStatus";
 import { Accordion, AccordionContent, AccordionTrigger } from "./ui/accordion";
 import { AccordionItem } from "@radix-ui/react-accordion";
 import { useUser } from "@/context/UserContext";
+import { useEffect, useState } from "react";
+import { BASE_URL } from "@/config/constants";
+import axios from "axios";
 
 type SidebarProps = {
   show?: boolean;
   toggleShow: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
+type FollowingType = {
+  fullName: string;
+  isLive: boolean;
+  topicId: string;
+  followingId: string;
+  profilePicture: string;
+};
+
 const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
   const [user, fetchUser] = useUser();
+  const [followings, setFollowings] = useState<FollowingType[] | null>(null);
+
+  useEffect(() => {
+    const fetchFollowings = async () => {
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/follower/${user?.id}/following`
+        );
+        setFollowings(response.data);
+      } catch (error) {}
+    };
+    fetchFollowings();
+  }, [user]);
 
   return (
     <aside
@@ -45,21 +69,31 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
             <SidebarLink to="/home/category">Category</SidebarLink>
             {/* <SidebarLink to="/home/trending">Trending</SidebarLink> */}
             <Separator />
-            <Accordion type="single" collapsible className="w-full -mt-2">
-              <AccordionItem value="1">
-                <AccordionTrigger>
-                  <p className="text-[#868686] text-lg">Friend</p>
-                </AccordionTrigger>
-                <AccordionContent className="flex flex-col gap-4">
-                  <ProfileStatus />
-                  <ProfileStatus
-                    username="propanemethanolpropanemethanol"
-                    online={true}
-                  />
-                  <ProfileStatus username="marcodave_" />
-                </AccordionContent>
-              </AccordionItem>
-            </Accordion>
+            {user && (
+              <Accordion type="single" collapsible className="w-full -mt-2">
+                <AccordionItem value="1">
+                  <AccordionTrigger>
+                    <p className="text-[#868686] text-lg">Following</p>
+                  </AccordionTrigger>
+                  <AccordionContent className="flex flex-col gap-4">
+                    {followings?.map((following) => (
+                      <ProfileStatus
+                        username={following.fullName}
+                        online={following.isLive}
+                        topicId={following.topicId}
+                        avatar={following.profilePicture}
+                      />
+                    ))}
+                    {/* <ProfileStatus />
+                    <ProfileStatus
+                      username="propanemethanolpropanemethanol"
+                      online={true}
+                    />
+                    <ProfileStatus username="marcodave_" /> */}
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            )}
           </div>
         </nav>
       </div>

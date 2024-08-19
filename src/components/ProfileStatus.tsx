@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Wifi, WifiOff } from "react-feather";
 
@@ -5,12 +6,14 @@ type ProfileStatusProps = {
   username?: string;
   avatar?: string;
   online?: boolean;
+  topicId?: string;
 };
 
 const ProfileStatus = ({
   username = "wongsodillon",
   avatar = "https://github.com/shadcn.png",
   online = false,
+  topicId = "",
 }: ProfileStatusProps) => {
   return (
     <div className="flex justify-between items-center">
@@ -19,9 +22,12 @@ const ProfileStatus = ({
           <AvatarImage src={avatar} alt="@shadcn" />
           <AvatarFallback>{username.charAt(0)}</AvatarFallback>
         </Avatar>
-        <p className="text-md overflow-hidden text-ellipsis whitespace-nowrap max-w-[130px]">
+        <Link
+          to={`/stream/${topicId}`}
+          className="text-md overflow-hidden text-ellipsis whitespace-nowrap max-w-[130px]"
+        >
           {username}
-        </p>
+        </Link>
       </div>
       {online ? (
         <div className="w-3 h-3 rounded-full bg-[#6BC355]"></div>

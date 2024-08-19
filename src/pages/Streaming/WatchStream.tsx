@@ -3,7 +3,6 @@ import { WifiOff, X } from "react-feather";
 import { Download, Video, Send } from "react-feather";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { BASE_URL } from "@/config/constants";
@@ -22,7 +21,7 @@ import { UserType } from "@/types/UserTypes";
 import socket from "@/lib/webSocket";
 import { useToaster } from "@/context/ToastContext";
 import ProfilePicture from "@/components/ProfilePicture";
-import { set } from "date-fns";
+import { ChatMessageType } from "@/types/StreamTypes";
 
 const WatchStream = () => {
   const [user, fetchUser, balance, fetchBalance] = useUser();
@@ -38,7 +37,7 @@ const WatchStream = () => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const navigate = useNavigate();
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<ChatMessageType[]>([]);
   const [message, setMessage] = useState("");
   const [viewerCount, setViewerCount] = useState(0);
   const [donationAmount, setDonationAmount] = useState("");
@@ -59,6 +58,9 @@ const WatchStream = () => {
   const handleGiftChange = (amount: number) => {
     if (amount >= 1000000) {
       toastError("Maximum gift amount is 1,000,000 HBAR");
+      return;
+    } else if (amount <= 0) {
+      toastError("Please give a valid amount");
       return;
     }
     setDonationAmount(amount.toString());
@@ -169,6 +171,7 @@ const WatchStream = () => {
       socket.off("offer");
       socket.off("ice-candidate");
       socket.off("stream-started");
+      socket.off("chat");
       socket.emit("leave-room", topic_id);
     };
   }, [topic_id]);
@@ -180,8 +183,13 @@ const WatchStream = () => {
   const handleMessageSubmit = (e: any) => {
     e.preventDefault();
     if (message.trim() === "") return;
-    setMessages((prevMessages) => [...prevMessages, message]);
-    socket.emit("chat", topic_id, message);
+    const chatMessage: ChatMessageType = {
+      fullName: user.profile.full_name,
+      content: message,
+      timeStamp: new Date().toLocaleTimeString(),
+    };
+    setMessages((prevMessages) => [...prevMessages, chatMessage]);
+    socket.emit("chat", topic_id, chatMessage);
     setMessage("");
   };
 
@@ -204,7 +212,6 @@ const WatchStream = () => {
     e.preventDefault();
 
     const token = localStorage.getItem("token");
-
     if (!token) {
       console.error("No token found");
       return;
@@ -213,13 +220,16 @@ const WatchStream = () => {
     try {
       setDonateLoading(true);
       console.log("Sender Account ID:", user.hederaAccountId);
+      if (Number(donationAmount) <= 0 || Number(donationAmount) >= 1000000) {
+        toastError("Please give a valid amount");
+        return;
+      }
       const streamResponse = await axios.get<{ receiverAccountId: string }>(
         `${BASE_URL}/stream/${topic_id}/receiver`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       const receiverAccountId = streamResponse.data.receiverAccountId;
       console.log("sender accid", senderAccountId);
       console.log("Receiver Account ID:", receiverAccountId);
@@ -474,7 +484,7 @@ const WatchStream = () => {
         </div>
         <div
           className={
-            "flex flex-col max-w-64 h-screen relative duration-200 bg-white ease-linear border-l  " +
+            "flex flex-col w-72 max-w-72 h-screen relative duration-200 bg-white ease-linear border-l  " +
             (showChat ? "" : "hidden")
           }
         >
@@ -494,7 +504,7 @@ const WatchStream = () => {
                   {notification.message}
                 </div>
               )} */}
-            <div className="flex space-x-2 p-2">
+            {/* <div className="flex space-x-2 p-2">
               <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
                 Marco
               </div>
@@ -513,15 +523,15 @@ const WatchStream = () => {
               <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
                 Marco
               </div>
-            </div>
+            </div> */}
           </div>
           <div className="bg-white flex flex-grow overflow-y-auto">
             {liveStream && (
-              <ScrollArea className="px-4 py-2 flex-grow">
+              <ScrollArea className="px-4 py-2 flex-grow flex flex-col gap-2 flex-wrap">
                 {messages.map((msg, index) => (
-                  <div key={index} className="mb-2">
-                    <div className="text-sm">{msg}</div>
-                  </div>
+                  <p key={index} className="whitespace-pre-wrap break-words">
+                    <strong>{msg.fullName}:</strong> {msg.content}
+                  </p>
                 ))}
               </ScrollArea>
             )}
@@ -546,7 +556,6 @@ const WatchStream = () => {
                 />
                 <Button type="submit" className="flex items-center gap-1">
                   <Send size={16} />
-                  Send
                 </Button>
               </form>
             </div>
