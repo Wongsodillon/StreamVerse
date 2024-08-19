@@ -1,6 +1,6 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
-import { Menu, Search, Settings, LogOut, User, Video } from "react-feather";
+import { Menu, Search, Settings, LogOut, User, Video, Anchor } from "react-feather";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -24,6 +24,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ProfilePicture from "@/components/ProfilePicture";
+import { jwtDecode } from "jwt-decode";
 
 type MainLayoutProps = PropsWithChildren & {
   scrollable?: boolean;
@@ -34,7 +35,53 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
   const [user, fetchUser] = useUser();
   const { accountId, walletInterface } = useWalletInterface();
   const [search, setSearch] = useState("");
+  const [balance, setBalance] = useState<number>(0); 
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const fetchAccountData = async () => {
+      try {
+        const token = localStorage.getItem("token");
+        if (!token) return;
+        
+        const decodedToken = jwtDecode<{ id: string }>(token);
+        const userId = decodedToken.id;
+
+        const accountIdResponse = await axios.get(
+          `${BASE_URL}/account/account-id`,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+
+        if (accountIdResponse.data.hederaAccountId) {
+          fetchBalance(token, accountIdResponse.data.hederaAccountId);
+        }
+      } catch (error) {
+        console.error("Error fetching account data:", error);
+      }
+    };
+
+    const fetchBalance = async (token: string, accountId: string) => {
+      try {
+        const response = await axios.get(`${BASE_URL}/account/balance`, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        
+        let balanceData = response.data.balance;
+        if (typeof balanceData === "object" && balanceData !== null) {
+          balanceData = Number(balanceData.low) + Number(balanceData.high) * 2 ** 32;
+        }
+        
+        setBalance(balanceData);
+      } catch (error) {
+        console.error("Error fetching balance:", error);
+        setBalance(0);
+      }
+    };
+
+    fetchAccountData();
+  }, []);
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
@@ -80,6 +127,18 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
     e.preventDefault();
     navigate(`/search/${search}`);
   };
+  function formatBalance(balance: number): string {
+    if (balance >= 1e9) {
+      return (balance / 1e9).toFixed(1).replace(/\.0$/, '') + 'B'; // Billions
+    }
+    if (balance >= 1e6) {
+      return (balance / 1e6).toFixed(1).replace(/\.0$/, '') + 'M'; // Millions
+    }
+    if (balance >= 1e3) {
+      return (balance / 1e3).toFixed(1).replace(/\.0$/, '') + 'k'; // Thousands
+    }
+    return balance.toString();
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
@@ -150,7 +209,7 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                       className="w-12 h-12"
                     />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-48 px-2 py-2">
+                  <DropdownMenuContent className="w-72 px-2 py-2">
                     <div className="flex px-2 py-2">
                       <p className="text-md font-bold">
                         {user.profile.full_name}
@@ -176,6 +235,12 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                       <DropdownMenuItem onClick={handleLogout}>
                         <LogOut className="mr-2 h-5 w-5" />
                         Logout
+                      </DropdownMenuItem>
+                      <DropdownMenuItem>
+                        <Anchor className="mr-2 h-5 w-5"/>
+                        <div>
+                          <p className="text-sm">Balance: {formatBalance(balance)} HBAR</p>
+                        </div>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>

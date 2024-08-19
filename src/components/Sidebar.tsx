@@ -36,6 +36,7 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
             <SidebarLink to="/home">For you</SidebarLink>
             <SidebarLink to={`/my-channel`}>My Channel</SidebarLink>
             <SidebarLink to="/home/category">Category</SidebarLink>
+            {/* <SidebarLink to="/home/trending">Trending</SidebarLink> */}
             <Separator />
             <Accordion type="single" collapsible className="w-full -mt-2">
               <AccordionItem value="1">
