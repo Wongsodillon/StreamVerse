@@ -4,7 +4,7 @@ export type UserType = {
   id: number;
   email: string;
   password: string;
-  hedera_account_id: string;
+  hederaAccountId: string;
   profile: ProfileType;
   stream: StreamType;
 };

@@ -1,9 +1,16 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
-import { Menu, Search, Settings, LogOut, User, Video, Anchor } from "react-feather";
+import {
+  Menu,
+  Search,
+  Settings,
+  LogOut,
+  User,
+  Video,
+  Anchor,
+} from "react-feather";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config/constants";
 import { Button } from "@/components/ui/button";
@@ -15,6 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -32,64 +40,18 @@ type MainLayoutProps = PropsWithChildren & {
 
 const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [user, fetchUser] = useUser();
+  const [user, fetchUser, balance, fetchBalance] = useUser();
   const { accountId, walletInterface } = useWalletInterface();
   const [search, setSearch] = useState("");
-  const [balance, setBalance] = useState<number>(0); 
   const navigate = useNavigate();
-
-  useEffect(() => {
-    const fetchAccountData = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) return;
-        
-        const decodedToken = jwtDecode<{ id: string }>(token);
-        const userId = decodedToken.id;
-
-        const accountIdResponse = await axios.get(
-          `${BASE_URL}/account/account-id`,
-          {
-            headers: { Authorization: `Bearer ${token}` },
-          }
-        );
-
-        if (accountIdResponse.data.hederaAccountId) {
-          fetchBalance(token, accountIdResponse.data.hederaAccountId);
-        }
-      } catch (error) {
-        console.error("Error fetching account data:", error);
-      }
-    };
-
-    const fetchBalance = async (token: string, accountId: string) => {
-      try {
-        const response = await axios.get(`${BASE_URL}/account/balance`, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
-        
-        let balanceData = response.data.balance;
-        if (typeof balanceData === "object" && balanceData !== null) {
-          balanceData = Number(balanceData.low) + Number(balanceData.high) * 2 ** 32;
-        }
-        
-        setBalance(balanceData);
-      } catch (error) {
-        console.error("Error fetching balance:", error);
-        setBalance(0);
-      }
-    };
-
-    fetchAccountData();
-  }, []);
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  // useEffect(() => {
-  //   console.log(user);
-  // }, []);
+  useEffect(() => {
+    console.log(user);
+  }, []);
 
   const handleConnect = async () => {
     if (accountId) {
@@ -129,13 +91,13 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
   };
   function formatBalance(balance: number): string {
     if (balance >= 1e9) {
-      return (balance / 1e9).toFixed(1).replace(/\.0$/, '') + 'B'; // Billions
+      return (balance / 1e9).toFixed(1).replace(/\.0$/, "") + "B"; // Billions
     }
     if (balance >= 1e6) {
-      return (balance / 1e6).toFixed(1).replace(/\.0$/, '') + 'M'; // Millions
+      return (balance / 1e6).toFixed(1).replace(/\.0$/, "") + "M"; // Millions
     }
     if (balance >= 1e3) {
-      return (balance / 1e3).toFixed(1).replace(/\.0$/, '') + 'k'; // Thousands
+      return (balance / 1e3).toFixed(1).replace(/\.0$/, "") + "k"; // Thousands
     }
     return balance.toString();
   }
@@ -209,12 +171,18 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                       className="w-12 h-12"
                     />
                   </DropdownMenuTrigger>
-                  <DropdownMenuContent className="w-72 px-2 py-2">
+                  <DropdownMenuContent className="w-64 px-2 py-2">
                     <div className="flex px-2 py-2">
                       <p className="text-md font-bold">
                         {user.profile.full_name}
                       </p>
                     </div>
+                    <div className="flex px-2 pb-2">
+                      <p className="text-sm">
+                        Balance: {formatBalance(balance)} HBAR
+                      </p>
+                    </div>
+                    <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuItem onClick={() => navigate("/account")}>
                         <User className="mr-2 h-5 w-5" />
@@ -235,12 +203,6 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                       <DropdownMenuItem onClick={handleLogout}>
                         <LogOut className="mr-2 h-5 w-5" />
                         Logout
-                      </DropdownMenuItem>
-                      <DropdownMenuItem>
-                        <Anchor className="mr-2 h-5 w-5"/>
-                        <div>
-                          <p className="text-sm">Balance: {formatBalance(balance)} HBAR</p>
-                        </div>
                       </DropdownMenuItem>
                     </DropdownMenuGroup>
                   </DropdownMenuContent>

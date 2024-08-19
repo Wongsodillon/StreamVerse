@@ -20,7 +20,7 @@ import { useParams } from "react-router-dom";
 import { StreamType } from "@/types/StreamTypes";
 import { UserType } from "@/types/UserTypes";
 import socket from "@/lib/webSocket";
- import { jwtDecode } from "jwt-decode";
+import { jwtDecode } from "jwt-decode";
 
 const WatchStream = () => {
   const [user, fetchUser] = useUser();
@@ -43,8 +43,10 @@ const WatchStream = () => {
   const [donationMessage, setDonationMessage] = useState("");
   const [senderAccountId, setSenderAccountId] = useState("");
   const [balance, setBalance] = useState(0);
-  const [notification, setNotification] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
- 
+  const [notification, setNotification] = useState<{
+    type: "success" | "error";
+    message: string;
+  } | null>(null);
 
   const toggleChat = () => {
     setShowChat(!showChat);
@@ -53,6 +55,7 @@ const WatchStream = () => {
     if (amount >= 1000000) {
       return;
     }
+    setDonationAmount(amount.toString());
     setSelectedGift((prev) => (prev === amount ? null : amount));
   };
   useEffect(() => {
@@ -75,8 +78,6 @@ const WatchStream = () => {
     const peerConnection = new RTCPeerConnection({
       iceServers: [{ urls: "stun:stun.l.google.com:19302" }],
     });
-
-    
 
     peerConnectionRef.current = peerConnection;
 
@@ -133,17 +134,15 @@ const WatchStream = () => {
       console.log("User connected");
       setViewerCount((prev) => prev + 1);
     });
-    
+
     socket.on("user-disconnected", () => {
       console.log("User disconnected");
       setViewerCount((prev) => prev - 1);
     });
 
-
     socket.on("stop-stream", async () => {
       videoRef.current = null;
     });
-
 
     return () => {
       peerConnection.close();
@@ -161,7 +160,7 @@ const WatchStream = () => {
     console.log(videoRef);
   }, [videoRef]);
 
-  const handleMessageSubmit = (e:any) => {
+  const handleMessageSubmit = (e: any) => {
     e.preventDefault();
     if (message.trim() === "") return;
     setMessages((prevMessages) => [...prevMessages, message]);
@@ -174,7 +173,7 @@ const WatchStream = () => {
       try {
         const token = localStorage.getItem("token");
         if (!token) return;
-        
+
         const decodedToken = jwtDecode<{ id: string }>(token);
         const userId = decodedToken.id;
 
@@ -198,12 +197,13 @@ const WatchStream = () => {
         const response = await axios.get(`${BASE_URL}/account/balance`, {
           headers: { Authorization: `Bearer ${token}` },
         });
-        
+
         let balanceData = response.data.balance;
         if (typeof balanceData === "object" && balanceData !== null) {
-          balanceData = Number(balanceData.low) + Number(balanceData.high) * 2 ** 32;
+          balanceData =
+            Number(balanceData.low) + Number(balanceData.high) * 2 ** 32;
         }
-        
+
         setBalance(balanceData);
       } catch (error) {
         console.error("Error fetching balance:", error);
@@ -216,31 +216,31 @@ const WatchStream = () => {
 
   function formatBalance(balance: number): string {
     if (balance >= 1e9) {
-      return (balance / 1e9).toFixed(1).replace(/\.0$/, '') + 'B'; // Billions
+      return (balance / 1e9).toFixed(1).replace(/\.0$/, "") + "B"; // Billions
     }
     if (balance >= 1e6) {
-      return (balance / 1e6).toFixed(1).replace(/\.0$/, '') + 'M'; // Millions
+      return (balance / 1e6).toFixed(1).replace(/\.0$/, "") + "M"; // Millions
     }
     if (balance >= 1e3) {
-      return (balance / 1e3).toFixed(1).replace(/\.0$/, '') + 'k'; // Thousands
+      return (balance / 1e3).toFixed(1).replace(/\.0$/, "") + "k"; // Thousands
     }
     return balance.toString();
   }
 
-  const handleDonation = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
+  const handleDonation = async (
+    e: React.FormEvent<HTMLFormElement>
+  ): Promise<void> => {
     e.preventDefault();
     const token = localStorage.getItem("token");
-    
+
     if (!token) {
       console.error("No token found");
       return;
     }
-  
+
     try {
-      console.log("Sender Account ID:", senderAccountId);
-      console.log("Stream ID (Room ID):", topic_id);
-  
-      // Fetch receiver account ID
+      console.log("Sender Account ID:", user.hederaAccountId);
+
       const streamResponse = await axios.get<{ receiverAccountId: string }>(
         `${BASE_URL}/stream/${topic_id}/receiver`,
         {
@@ -249,14 +249,14 @@ const WatchStream = () => {
       );
 
       const receiverAccountId = streamResponse.data.receiverAccountId;
+      console.log("sender accid", senderAccountId);
       console.log("Receiver Account ID:", receiverAccountId);
-  
-      // Send donation
+      console.log("Donation Amount:", donationAmount);
       const response = await axios.post<{ message: string }>(
-        '${BASE_URL}/donate',
+        `${BASE_URL}/donate`,
         {
-          senderAccountId,
-          receiverAccountId,
+          senderAccountId: user.hederaAccountId,
+          receiverAccountId: receiverAccountId,
           amount: donationAmount,
           streamId: topic_id,
         },
@@ -264,7 +264,7 @@ const WatchStream = () => {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-      
+
       setDonationMessage(response.data.message);
     } catch (error: any) {
       console.error("Error during donation:", error);
@@ -338,7 +338,9 @@ const WatchStream = () => {
                       <ScrollArea className="px-6 pb-6">
                         <div className="flex flex-col">
                           <p className="font-bold text-lg">Select gift</p>
-                          <p className="text-sm">Balance: {formatBalance(balance)} HBAR</p>
+                          <p className="text-sm">
+                            Balance: {formatBalance(balance)} HBAR
+                          </p>
                         </div>
                         <div className="grid grid-cols-2 mt-2">
                           {[10, 25, 50, 100, 200, 500].map((amount) => (
@@ -352,28 +354,34 @@ const WatchStream = () => {
                         </div>
                         <div className="flex flex-col items-end gap-2 mt-4 px-2">
                           <p className="font-bold w-full">Send custom amount</p>
-                          <form onSubmit={handleDonation} className="flex flex-col gap-2">
+                          <form
+                            onSubmit={handleDonation}
+                            className="flex w-full flex-col gap-2 items-end"
+                          >
                             <Input
                               placeholder="Enter HBar amount"
                               type="number"
                               value={donationAmount}
-                              onChange={(e) => setDonationAmount(e.target.value)}
-                              className="border border-input"
+                              onChange={(e) =>
+                                setDonationAmount(e.target.value)
+                              }
+                              className="border border-input w-full"
                             />
                             <Button
                               type="submit"
-                              className="px-4 text-lg gap-4 max-w-60 text-md"
+                              className="px-4 text-lg gap-4 max-w-40 text-md"
                               variant={"secondary"}
                             >
                               Donate <Send size={18} />
                             </Button>
                           </form>
                           {donationMessage && (
-                            <p className="text-green-600 mt-2">{donationMessage}</p>
+                            <p className="text-green-600 mt-2">
+                              {donationMessage}
+                            </p>
                           )}
                         </div>
                       </ScrollArea>
-
                     </div>
                   </PopoverContent>
                 </Popover>
@@ -384,7 +392,9 @@ const WatchStream = () => {
               <div className="flex justify-between">
                 <div className="flex gap-4 items-center text-darkPurple">
                   <Video size={24} />
-                  <p className="text-lg font-bold">{viewerCount} watching now</p>
+                  <p className="text-lg font-bold">
+                    {viewerCount} watching now
+                  </p>
                 </div>
                 <p>Time elapsed: 4:06:20</p>
               </div>
@@ -424,7 +434,7 @@ const WatchStream = () => {
             />
           </div>
           <div className="bg-white overflow-x-auto">
-              {/* {notification && (
+            {/* {notification && (
                 <div
                   className={`absolute top-4 right-4 p-4 rounded-md text-white ${notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}
                 >
@@ -432,22 +442,34 @@ const WatchStream = () => {
                 </div>
               )} */}
             <div className="flex space-x-2 p-2">
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white" >Marco</div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
+              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
+                Marco
+              </div>
             </div>
           </div>
           <div className="bg-white flex flex-grow overflow-y-auto">
             {liveStream && (
               <ScrollArea className="px-4 py-2 flex-grow">
                 {messages.map((msg, index) => (
-                    <div key={index} className="mb-2">
-                      <div className="text-sm">{msg}</div>
-                    </div>
-                  ))}
+                  <div key={index} className="mb-2">
+                    <div className="text-sm">{msg}</div>
+                  </div>
+                ))}
               </ScrollArea>
             )}
             {!liveStream && (
@@ -459,20 +481,22 @@ const WatchStream = () => {
           </div>
           {liveStream && (
             <div className="p-3 min-h-[11.4rem] border-t bg-white ">
-            <p className="text-md font-semibold mb-1 text-purple-700">Send Chat</p>
-            <form onSubmit={handleMessageSubmit} className="flex gap-2">
-              <Input
-                placeholder="Type a message"
-                value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                className="flex-grow"
-              />
-              <Button type="submit" className="flex items-center gap-1">
-                <Send size={16} />
-                Send
-              </Button>
-            </form>
-          </div>
+              <p className="text-md font-semibold mb-1 text-purple-700">
+                Send Chat
+              </p>
+              <form onSubmit={handleMessageSubmit} className="flex gap-2">
+                <Input
+                  placeholder="Type a message"
+                  value={message}
+                  onChange={(e) => setMessage(e.target.value)}
+                  className="flex-grow"
+                />
+                <Button type="submit" className="flex items-center gap-1">
+                  <Send size={16} />
+                  Send
+                </Button>
+              </form>
+            </div>
           )}
         </div>
       </div>
