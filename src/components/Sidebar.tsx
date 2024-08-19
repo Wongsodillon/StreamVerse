@@ -35,7 +35,7 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
           <div className="flex flex-col gap-4">
             <SidebarLink to="/home">Home</SidebarLink>
             <SidebarLink to="/home/category">Category</SidebarLink>
-            <SidebarLink to="/home/trending">Trending</SidebarLink>
+            {/* <SidebarLink to="/home/trending">Trending</SidebarLink> */}
             <Separator />
             <Accordion type="single" collapsible className="w-full -mt-2">
               <AccordionItem value="1">

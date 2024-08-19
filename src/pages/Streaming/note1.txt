@@ -113,21 +113,9 @@ const WatchStream = () => {
       setMessages((prevMessages) => [...prevMessages, incomingMessage]);
     });
 
-    socket.on("user-connected", () => {
-      console.log("User connected");
-      setViewerCount((prev) => prev + 1);
-    });
-    
-    socket.on("user-disconnected", () => {
-      console.log("User disconnected");
-      setViewerCount((prev) => prev - 1);
-    });
-
-
     socket.on("stop-stream", async () => {
       videoRef.current = null;
     });
-
 
     return () => {
       peerConnection.close();
@@ -384,7 +372,7 @@ const WatchStream = () => {
               <div className="flex justify-between">
                 <div className="flex gap-4 items-center text-darkPurple">
                   <Video size={24} />
-                  <p className="text-lg font-bold">{viewerCount} watching now</p>
+                  <p className="text-lg font-bold">10.2 K watching now</p>
                 </div>
                 <p>Time elapsed: 4:06:20</p>
               </div>
