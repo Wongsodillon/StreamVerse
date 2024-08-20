@@ -27,20 +27,23 @@ const Home: React.FC = () => {
   const [streams, setStreams] = useState<Stream[] | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
 
-  const fetchStreams = async () => {
-    setLoading(true);
-    try {
-      const response = await axios.get<Stream[]>(`${BASE_URL}/allstream`);
-      console.log("Fetched streams:", response.data); // Log fetched data
-      setStreams(response.data); // Save fetched data
-    } catch (error) {
-      console.error("Error fetching streams:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(()=>{
+    const fetchStreams = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get<Stream[]>(`${BASE_URL}/stream`);
+        console.log("Fetched streams:", response.data); 
+        setStreams(response.data); 
+      } catch (error) {
+        console.error("Error fetching streams:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchStreams();
+  },[]);
+
   
-  fetchStreams();
 
   // const streams = [
   //   {
