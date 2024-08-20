@@ -1,7 +1,7 @@
 import { Wifi } from "react-feather";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
-import { Stream } from "@/types/StreamTypes";
+import  {Stream} from "@/types/StreamsType";
 import { useNavigate } from "react-router-dom";
 
 type LiveVideoCardProps = {
@@ -26,19 +26,18 @@ const LiveVideoCard = ({ stream }: LiveVideoCardProps) => {
         <div className="flex items-center mt-2">
           <Avatar>
             <AvatarImage
-              src="https://via.placeholder.com/50"
-              alt={stream.user}
+              src={stream.user.profile.profile_picture}
             />
-            <AvatarFallback>{stream.user[0]}</AvatarFallback>
+            <AvatarFallback>{stream.user.profile.profile_picture}</AvatarFallback>
           </Avatar>
           <div className="ml-4">
-            <p className="text-gray-600">{stream.user}</p>
+            <p className="text-gray-600">{stream.user.profile.full_name}</p>
           </div>
         </div>
         <div className="flex justify-between items-center mt-4">
           <Button
             className="rounded-full gap-2 text-sm items-center"
-            onClick={() => navigate("/streaming/" + stream.user)}
+            onClick={() => navigate("/streaming/" + stream.user_id)}
           >
             <Wifi size={20} />
             WATCH

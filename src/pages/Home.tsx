@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, {  useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,9 @@ import LiveVideoCard from "@/components/LiveVideoCard";
 import { Wifi } from "react-feather";
 import Thumbnail from "@/components/Thumbnail";
 import "@/layouts/page.css";
+import { BASE_URL } from "@/config/constants";
+import { useEffect, useState } from 'react';
+import axios from 'axios';
 
 
 import { Swiper, SwiperSlide } from 'swiper/react';
@@ -18,92 +21,109 @@ import 'swiper/css';
 import 'swiper/css/free-mode';
 import 'swiper/css/pagination';
 import { FreeMode, Pagination } from 'swiper/modules';
-
-
+import {Stream} from '@/types/StreamsType';
 
 const Home: React.FC = () => {
-  const streams = [
-    {
-      id: "1",
-      title: "Video Title 1",
-      thumbnail: Place1,
-      user: "drdisrespect",
-      views: "1M views",
-      time: "1 week ago",
-    },
-    {
-      id: "2",
-      title: "Video Title 2",
-      thumbnail: Place2,
-      user: "shroud",
-      views: "500K views",
-      time: "2 days ago",
-    },
-    {
-      id: "3",
-      title: "Video Title 3",
-      thumbnail: Place3,
-      user: "ninja",
-      views: "800K views",
-      time: "3 days ago",
-    },
-    {
-      id: "4",
-      title: "Video Title 4",
-      thumbnail: Place4,
-      user: "drlupo",
-      views: "900K views",
-      time: "5 days ago",
-    },
-    {
-      id: "5",
-      title: "Video Title 1",
-      thumbnail: Place1,
-      user: "dspeed",
-      views: "1M views",
-      time: "1 week ago",
-    },
-    {
-      id: "6",
-      title: "Video Title 2",
-      thumbnail: Place2,
-      user: "cycycy05",
-      views: "500K views",
-      time: "2 days ago",
-    },
-    {
-      id: "7",
-      title: "Video Title 3",
-      thumbnail: Place3,
-      user: "miniminter",
-      views: "800K views",
-      time: "3 days ago",
-    },
-    {
-      id: "8",
-      title: "Video Title 4",
-      thumbnail: Place4,
-      user: "pewdiepie",
-      views: "900K views",
-      time: "5 days ago",
-    },
-    {
-      id: "9",
-      title: "Video Title 1",
-      thumbnail: Place1,
-      user: "ishowspeed",
-      views: "1M views",
-      time: "1 week ago",
-    },
-    {
-      id: "10",
-      title: "Video Title 2",
-      thumbnail: Place2,
-      user: "kaicenat",
-      views: "500K views",
-      time: "2 days ago",
-    },
-  ];
+  const [streams, setStreams] = useState<Stream[] | null>(null);
+  const [loading, setLoading] = useState<boolean>(false);
+
+  const fetchStreams = async () => {
+    setLoading(true);
+    try {
+      const response = await axios.get<Stream[]>(`${BASE_URL}/allstream`);
+      console.log("Fetched streams:", response.data); // Log fetched data
+      setStreams(response.data); // Save fetched data
+    } catch (error) {
+      console.error("Error fetching streams:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+  
+  fetchStreams();
+
+  // const streams = [
+  //   {
+  //     id: "1",
+  //     title: "Video Title 1",
+  //     thumbnail: Place1,
+  //     user: "drdisrespect",
+  //     views: "1M views",
+  //     time: "1 week ago",
+  //   },
+  //   {
+  //     id: "2",
+  //     title: "Video Title 2",
+  //     thumbnail: Place2,
+  //     user: "shroud",
+  //     views: "500K views",
+  //     time: "2 days ago",
+  //   },
+  //   {
+  //     id: "3",
+  //     title: "Video Title 3",
+  //     thumbnail: Place3,
+  //     user: "ninja",
+  //     views: "800K views",
+  //     time: "3 days ago",
+  //   },
+  //   {
+  //     id: "4",
+  //     title: "Video Title 4",
+  //     thumbnail: Place4,
+  //     user: "drlupo",
+  //     views: "900K views",
+  //     time: "5 days ago",
+  //   },
+  //   {
+  //     id: "5",
+  //     title: "Video Title 1",
+  //     thumbnail: Place1,
+  //     user: "dspeed",
+  //     views: "1M views",
+  //     time: "1 week ago",
+  //   },
+  //   {
+  //     id: "6",
+  //     title: "Video Title 2",
+  //     thumbnail: Place2,
+  //     user: "cycycy05",
+  //     views: "500K views",
+  //     time: "2 days ago",
+  //   },
+  //   {
+  //     id: "7",
+  //     title: "Video Title 3",
+  //     thumbnail: Place3,
+  //     user: "miniminter",
+  //     views: "800K views",
+  //     time: "3 days ago",
+  //   },
+  //   {
+  //     id: "8",
+  //     title: "Video Title 4",
+  //     thumbnail: Place4,
+  //     user: "pewdiepie",
+  //     views: "900K views",
+  //     time: "5 days ago",
+  //   },
+  //   {
+  //     id: "9",
+  //     title: "Video Title 1",
+  //     thumbnail: Place1,
+  //     user: "ishowspeed",
+  //     views: "1M views",
+  //     time: "1 week ago",
+  //   },
+  //   {
+  //     id: "10",
+  //     title: "Video Title 2",
+  //     thumbnail: Place2,
+  //     user: "kaicenat",
+  //     views: "500K views",
+  //     time: "2 days ago",
+  //   },
+  // ];
   const [currentIndex, setCurrentIndex] = useState(0);
   const nextRef = useRef<HTMLButtonElement>(null);
   const prevRef = useRef<HTMLButtonElement>(null);
@@ -455,9 +475,15 @@ const Home: React.FC = () => {
           like
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {streams.map((stream) => (
-            <LiveVideoCard key={stream.id} stream={stream} />
-          ))}
+          {loading ? (
+            <p>Loading...</p>
+          ) : streams ? (
+            streams.map((stream) => (
+              <LiveVideoCard key={stream.user_id} stream={stream} />
+            ))
+          ) : (
+            <p>No streams available</p>
+          )}
         </div>
       </div>
 
