@@ -4,7 +4,7 @@ import { useUser } from "@/context/UserContext";
 
 const GuestMiddleware = ({ children }: PropsWithChildren) => {
   const navigate = useNavigate();
-  const [user, fetchUser] = useUser();
+  const [user,] = useUser();
 
   useEffect(() => {
     if (user) {
