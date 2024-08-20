@@ -1,30 +1,46 @@
-# React + TypeScript + Vite
+# StreamVerse
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+## 📜 Installation Guide
 
-Currently, two official plugins are available:
+### Frontend Installation
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
-
-- Configure the top-level `parserOptions` property like this:
-
-```js
-export default {
-  // other rules...
-  parserOptions: {
-    ecmaVersion: 'latest',
-    sourceType: 'module',
-    project: ['./tsconfig.json', './tsconfig.node.json', './tsconfig.app.json'],
-    tsconfigRootDir: __dirname,
-  },
-}
+Clone this project (Frontend repository)
+```
+git clone https://github.com/Wongsodillon/StreamVerse.git
 ```
 
-- Replace `plugin:@typescript-eslint/recommended` to `plugin:@typescript-eslint/recommended-type-checked` or `plugin:@typescript-eslint/strict-type-checked`
-- Optionally add `plugin:@typescript-eslint/stylistic-type-checked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and add `plugin:react/recommended` & `plugin:react/jsx-runtime` to the `extends` list
+Enter Project Directory
+```
+cd StreamVerse
+```
+
+Run these commands
+- Run `npm install`
+- Run `npm run dev`
+
+### Backend Installation
+
+Clone the backend repository
+```
+git clone https://github.com/Marcodave03/StreamVerse-Hedera.git
+```
+
+Enter Project Directory
+```
+cd StreamVerse-Hedera
+```
+
+Use XAMPP to start Apache and MySQL. Alternatively, you can use a different database of your choice.
+
+Create the .env file by copying the .env.example
+
+Run these commands
+- Run `npm install`
+- Run `nodemon index.js`
+
+If there is an error on when running `nodemon index.js` after `npm install`. 
+
+Run these commands
+- `npm uninstall bcrypt`
+- `npm install bcrypt`
+- `nodemon index.js`
