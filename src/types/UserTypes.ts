@@ -19,3 +19,14 @@ export type ProfileType = {
   date_of_birth: Date;
   profile_picture: string;
 };
+
+export type SearchUserType = {
+  user_id: number;
+  full_name: string;
+  is_live: boolean;
+  profile_picture: string;
+  bio: string;
+  stream_title: string;
+  followerCount: number;
+  topic_id: string;
+};

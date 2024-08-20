@@ -6,7 +6,7 @@ import AuthPage from "./pages/Auth/AuthPage";
 import { MetamaskContextProvider } from "./context/MetaMaskContext";
 import GuestMiddleware from "./middleware/GuestMiddleware";
 import Account from "./pages/Account/Account";
-import SearchPage from "./pages/SearchPage";
+import SearchPage from "./pages/Search/SearchPage";
 import MyChannel from "./pages/Streaming/MyChannel";
 
 function App() {
@@ -28,6 +28,7 @@ function App() {
           <Route path="/account" element={<Account />} />
           <Route path="/my-channel" element={<MyChannel />} />
           <Route path="/search/:search?" element={<SearchPage />} />
+          <Route path="/search/:search?/:tab" element={<SearchPage />} />
         </Routes>
       </MetamaskContextProvider>
     </BrowserRouter>

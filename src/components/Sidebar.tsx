@@ -78,6 +78,7 @@ const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
                   <AccordionContent className="flex flex-col gap-4">
                     {followings?.map((following) => (
                       <ProfileStatus
+                        key={following.followingId}
                         username={following.fullName}
                         online={following.isLive}
                         topicId={following.topicId}
