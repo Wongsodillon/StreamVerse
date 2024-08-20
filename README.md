@@ -1,5 +1,4 @@
 <h1 align="center">
-  <br>
      StreamVerse
   <br>
 </h1>
