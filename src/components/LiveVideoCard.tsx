@@ -37,7 +37,7 @@ const LiveVideoCard = ({ stream }: LiveVideoCardProps) => {
         <div className="flex justify-between items-center mt-4">
           <Button
             className="rounded-full gap-2 text-sm items-center"
-            onClick={() => navigate("/streaming/" + stream.user_id)}
+            onClick={() => navigate(`/stream/${stream.topic_id}`)} 
           >
             <Wifi size={20} />
             WATCH
