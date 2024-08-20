@@ -1,16 +1,19 @@
 import { createContext, ReactNode, useState } from "react";
 import { MetaMaskClient } from "@/services/metamaskClient";
 
-const initValue = {
+interface MetamaskContextProps {
+  metamaskAccountAddress: string;
+  setMetamaskAccountAddress: (newValue: string) => void;
+}
+
+const initValue: MetamaskContextProps = {
   metamaskAccountAddress: "",
-  setMetamaskAccountAddress: (newValue: string) => {},
+  setMetamaskAccountAddress: () => {},
 };
 
-export const MetamaskContext = createContext(initValue);
+export const MetamaskContext = createContext<MetamaskContextProps>(initValue);
 
-export const MetamaskContextProvider = (props: {
-  children: ReactNode | undefined;
-}) => {
+export const MetamaskContextProvider = ({ children }: { children: ReactNode }) => {
   const [metamaskAccountAddress, setMetamaskAccountAddress] = useState("");
 
   return (
@@ -21,7 +24,7 @@ export const MetamaskContextProvider = (props: {
       }}
     >
       <MetaMaskClient />
-      {props.children}
+      {children}
     </MetamaskContext.Provider>
   );
 };

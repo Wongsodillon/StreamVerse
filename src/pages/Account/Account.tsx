@@ -2,7 +2,7 @@ import MainLayout from "../../layouts/MainLayout";
 import { useUser } from "@/context/UserContext";
 import ProfilePictureUploader from "./ProfilePictureUploader";
 import { Input } from "@/components/ui/input";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DatePicker } from "@/components/ui/datepicker";

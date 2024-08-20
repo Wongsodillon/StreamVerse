@@ -1,6 +1,5 @@
 import Home from "@/pages/Home";
 import { Route, Routes } from "react-router-dom";
-import MainLayout from "@/layouts/MainLayout";
 import Categories from "@/pages/Categories";
 
 const HomeRoutes = () => {

@@ -1,5 +1,5 @@
 import MainLayout from "@/layouts/MainLayout";
-import { Wifi, X } from "react-feather";
+import { X } from "react-feather";
 import { Download, Video, WifiOff } from "react-feather";
 import { useEffect, useRef, useState } from "react";
 import { Input } from "@/components/ui/input";
@@ -23,18 +23,17 @@ import {
 } from "@/components/ui/tooltip";
 
 const MyChannel = () => {
-  const [user, fetchUser] = useUser();
+  const [user] = useUser();
   if (!user) {
     return <div>Loading...</div>;
   }
   const { topic_id } = useParams();
-  const [stream, setStream] = useState<StreamType>(user.stream);
+  const [stream] = useState<StreamType>(user.stream);
   const [liveStream, setLiveStream] = useState<MediaStream | null>(null);
   const [showChat, setShowChat] = useState(true);
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const peerConnectionRef = useRef<RTCPeerConnection | null>(null);
   const [messages, setMessages] = useState<ChatMessageType[]>([]);
-  const [message, setMessage] = useState("");
 
   const toggleChat = () => {
     setShowChat(!showChat);
@@ -63,7 +62,7 @@ const MyChannel = () => {
   useEffect(() => {
     const createRoom = async () => {
       try {
-        const response = await axios.post(`${BASE_URL}/stream/rooms`, {
+        await axios.post(`${BASE_URL}/stream/rooms`, {
           topic_id: topic_id,
         });
       } catch (error) {

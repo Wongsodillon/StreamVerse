@@ -1,5 +1,5 @@
 import { X } from "react-feather";
-import { Link, useLocation } from "react-router-dom";
+import { Link } from "react-router-dom";
 import SidebarLink from "./SidebarLink";
 import { Separator } from "./ui/separator";
 import ProfileStatus from "./ProfileStatus";
@@ -24,7 +24,7 @@ type FollowingType = {
 };
 
 const Sidebar = ({ show = true, toggleShow }: SidebarProps) => {
-  const [user, fetchUser] = useUser();
+  const [user] = useUser();
   const [followings, setFollowings] = useState<FollowingType[] | null>(null);
 
   useEffect(() => {

@@ -12,7 +12,7 @@ import MetaMaskLogo from "../assets/metamask-logo.png";
 import { useWalletInterface } from "@/services/useWalletInterface";
 
 const ConnectToWalletModal = () => {
-  const { accountId, walletInterface } = useWalletInterface();
+  const { accountId} = useWalletInterface();
 
   return (
     <Dialog>

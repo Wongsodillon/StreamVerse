@@ -14,7 +14,7 @@ const Login = ({ changePage }: { changePage: (index: number) => void }) => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [user, fetchUser] = useUser();
+  const [, fetchUser] = useUser();
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);

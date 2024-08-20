@@ -1,6 +1,4 @@
-import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Home from "@/pages/Home";
 import Categories from "@/pages/Categories";
 // import Trending from "@/pages/Trending";
 import Streaming from "../pages/Streaming/Streaming";

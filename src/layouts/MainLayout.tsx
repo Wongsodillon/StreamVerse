@@ -7,16 +7,13 @@ import {
   LogOut,
   User,
   Video,
-  Anchor,
 } from "react-feather";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useUser } from "@/context/UserContext";
-import { BASE_URL } from "@/config/constants";
 import { Button } from "@/components/ui/button";
 import ConnectToWalletModal from "@/components/ConnectToWalletModal";
 import { useWalletInterface } from "@/services/useWalletInterface";
-import axios from "axios";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -32,7 +29,6 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ProfilePicture from "@/components/ProfilePicture";
-import { jwtDecode } from "jwt-decode";
 
 type MainLayoutProps = PropsWithChildren & {
   scrollable?: boolean;
@@ -40,7 +36,7 @@ type MainLayoutProps = PropsWithChildren & {
 
 const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [user, fetchUser, balance, fetchBalance] = useUser();
+  const [user, fetchUser, balance] = useUser();
   const { accountId, walletInterface } = useWalletInterface();
   const [search, setSearch] = useState("");
   const navigate = useNavigate();
@@ -80,18 +76,6 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
     e.preventDefault();
     navigate(`/search/${search}`);
   };
-  function formatBalance(balance: number): string {
-    if (balance >= 1e9) {
-      return (balance / 1e9).toFixed(1).replace(/\.0$/, "") + "B"; // Billions
-    }
-    if (balance >= 1e6) {
-      return (balance / 1e6).toFixed(1).replace(/\.0$/, "") + "M"; // Millions
-    }
-    if (balance >= 1e3) {
-      return (balance / 1e3).toFixed(1).replace(/\.0$/, "") + "k"; // Thousands
-    }
-    return balance.toString();
-  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">

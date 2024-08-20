@@ -30,7 +30,7 @@ import {
 } from "@/components/ui/tooltip";
 
 const WatchStream = () => {
-  const [user, fetchUser, balance, fetchBalance] = useUser();
+  const [user, , balance, fetchBalance] = useUser();
   if (!user) {
     return <div>Loading...</div>;
   }
@@ -47,16 +47,11 @@ const WatchStream = () => {
   const [message, setMessage] = useState("");
   const [viewerCount, setViewerCount] = useState(0);
   const [donationAmount, setDonationAmount] = useState("");
-  const [donationMessage, setDonationMessage] = useState("");
   const [senderAccountId, setSenderAccountId] = useState("");
   const { toastSuccess, toastError } = useToaster();
   const [isFollowed, setIsFollowed] = useState(false);
   const [donateLoading, setDonateLoading] = useState(false);
   const [followLoading, setFollowLoading] = useState(false);
-  const [notification, setNotification] = useState<{
-    type: "success" | "error";
-    message: string;
-  } | null>(null);
 
   const toggleChat = () => {
     setShowChat(!showChat);
@@ -238,6 +233,7 @@ const WatchStream = () => {
       );
       const receiverAccountId = streamResponse.data.receiverAccountId;
       console.log("sender accid", senderAccountId);
+      console.log("sender accid", setSenderAccountId);
       console.log("Receiver Account ID:", receiverAccountId);
       console.log("Donation Amount:", donationAmount);
       const response = await axios.post<{ message: string }>(
@@ -253,13 +249,9 @@ const WatchStream = () => {
         }
       );
       toastSuccess(response.data.message);
-      setDonationMessage(response.data.message);
       fetchBalance();
     } catch (error: any) {
       console.error("Error during donation:", error);
-      setDonationMessage(
-        error.response?.data?.error || "Failed to process donation"
-      );
       toastError(error.response?.data?.error || "Failed to process donation");
     } finally {
       setDonateLoading(false);

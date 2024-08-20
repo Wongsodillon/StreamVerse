@@ -1,4 +1,3 @@
-import React, { useRef } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
@@ -8,13 +7,10 @@ import Place3 from "@/assets/place3.jpg";
 import Place4 from "@/assets/place4.jpg";
 import MainLayout from "@/layouts/MainLayout";
 import LiveVideoCard from "@/components/LiveVideoCard";
-import { Wifi } from "react-feather";
-import Thumbnail from "@/components/Thumbnail";
 import "@/layouts/page.css";
 import { BASE_URL } from "@/config/constants";
 import { useEffect, useState } from "react";
 import axios from "axios";
-
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import "swiper/css/free-mode";
@@ -43,36 +39,10 @@ const Home: React.FC = () => {
   }, []);
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const nextRef = useRef<HTMLButtonElement>(null);
-  const prevRef = useRef<HTMLButtonElement>(null);
   const handleThumbnailClick = (index: number) => {
     setCurrentIndex(index);
   };
   const navigate = useNavigate();
-
-  const showSlider = (type: string) => {
-    let newIndex;
-    if (type === "next") {
-      newIndex = currentIndex === 3 ? 0 : currentIndex + 1;
-    } else {
-      newIndex = currentIndex === 0 ? 3 : currentIndex - 1;
-    }
-    setCurrentIndex(newIndex);
-  };
-
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  const scrollLeft = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: -150, behavior: "smooth" });
-    }
-  };
-
-  const scrollRight = () => {
-    if (carouselRef.current) {
-      carouselRef.current.scrollBy({ left: 150, behavior: "smooth" });
-    }
-  };
 
   return (
     <MainLayout>

@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
-import { Wifi, WifiOff } from "react-feather";
+import { WifiOff } from "react-feather";
 
 type ProfileStatusProps = {
   username?: string;

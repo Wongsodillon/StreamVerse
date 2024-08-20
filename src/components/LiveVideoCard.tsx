@@ -1,5 +1,4 @@
 import { Wifi } from "react-feather";
-import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Button } from "./ui/button";
 import { Stream } from "@/types/StreamsType";
 import { useNavigate } from "react-router-dom";

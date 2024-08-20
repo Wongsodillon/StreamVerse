@@ -8,7 +8,7 @@ import InputError from "@/components/ui/input-error";
 import { useUser } from "@/context/UserContext";
 
 const Register = ({ changePage }: { changePage: (index: number) => void }) => {
-  const [user, fetchUser] = useUser();
+  const [, fetchUser] = useUser();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
