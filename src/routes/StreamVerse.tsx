@@ -1,7 +1,8 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import Categories from "@/pages/Home";
-import Trending from "@/pages/Categories";
+import Home from "@/pages/Home";
+import Categories from "@/pages/Categories";
+// import Trending from "@/pages/Trending";
 import Streaming from "../pages/Streaming/Streaming";
 
 const StreamVerse = () => {
@@ -9,7 +10,7 @@ const StreamVerse = () => {
     <Routes>
       <Route path="/" element={<Streaming />} />
       <Route path="/category" element={<Categories />} />
-      <Route path="/trending" element={<Trending />} />
+      {/* <Route path="/trending" element={< Trending />} /> */}
     </Routes>
   );
 };

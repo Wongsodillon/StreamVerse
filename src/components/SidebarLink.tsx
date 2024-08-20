@@ -4,7 +4,7 @@ const SidebarLink = ({ to, className = "", children, ...props }: LinkProps) => {
   const location = useLocation();
   const isActive = location.pathname === to;
   const activeStyles =
-    "bg-purple-gradient px-2 text-white transition-all duration-500 hover:text-white";
+    "bg-purple-gradient px-3 text-white transition-all duration-500 hover:text-white";
 
   return (
     <Link

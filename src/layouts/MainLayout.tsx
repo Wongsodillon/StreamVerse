@@ -1,9 +1,16 @@
 import { PropsWithChildren, useEffect, useState } from "react";
 import Sidebar from "@/components/Sidebar";
-import { Menu, Search, Settings, LogOut, User, Video } from "react-feather";
+import {
+  Menu,
+  Search,
+  Settings,
+  LogOut,
+  User,
+  Video,
+  Anchor,
+} from "react-feather";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useUser } from "@/context/UserContext";
 import { BASE_URL } from "@/config/constants";
 import { Button } from "@/components/ui/button";
@@ -15,6 +22,7 @@ import {
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
@@ -24,6 +32,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import ProfilePicture from "@/components/ProfilePicture";
+import { jwtDecode } from "jwt-decode";
 
 type MainLayoutProps = PropsWithChildren & {
   scrollable?: boolean;
@@ -31,17 +40,18 @@ type MainLayoutProps = PropsWithChildren & {
 
 const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
   const [showSidebar, setShowSidebar] = useState(false);
-  const [user, fetchUser] = useUser();
+  const [user, fetchUser, balance, fetchBalance] = useUser();
   const { accountId, walletInterface } = useWalletInterface();
+  const [search, setSearch] = useState("");
   const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setShowSidebar(!showSidebar);
   };
 
-  // useEffect(() => {
-  //   console.log(user);
-  // }, []);
+  useEffect(() => {
+    console.log(user);
+  }, []);
 
   const handleConnect = async () => {
     if (accountId) {
@@ -58,22 +68,30 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
       if (!token) {
         return;
       }
-      await axios.post(
-        `${BASE_URL}/auth/logout`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
       localStorage.removeItem("token");
       fetchUser();
+      navigate("/home");
     } catch (error: any) {
       console.log("Error logging out:", error);
     }
   };
+
+  const onSearch = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    navigate(`/search/${search}`);
+  };
+  function formatBalance(balance: number): string {
+    if (balance >= 1e9) {
+      return (balance / 1e9).toFixed(1).replace(/\.0$/, "") + "B"; // Billions
+    }
+    if (balance >= 1e6) {
+      return (balance / 1e6).toFixed(1).replace(/\.0$/, "") + "M"; // Millions
+    }
+    if (balance >= 1e3) {
+      return (balance / 1e3).toFixed(1).replace(/\.0$/, "") + "k"; // Thousands
+    }
+    return balance.toString();
+  }
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-100">
@@ -91,13 +109,15 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
               <button onClick={toggleSidebar} className="block lg:hidden">
                 <Menu className="text-darkGray" size={24} />
               </button>
-              <form action="" className="w-full">
+              <form onSubmit={onSearch} className="w-full">
                 <div className="relative">
                   <Search
                     className="hidden sm:block absolute top-1/2 left-2 transform -translate-y-1/2 text-darkGray"
                     size={20}
                   />
                   <Input
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
                     className="w-full bg-transparent text-lg pl-4 sm:pl-10 pr-4 focus:outline-none focus-visible:ring-0 xl:w-125 border-none"
                     placeholder="Search"
                   />
@@ -148,6 +168,10 @@ const MainLayout = ({ scrollable = true, children }: MainLayoutProps) => {
                         {user.profile.full_name}
                       </p>
                     </div>
+                    <div className="flex px-2 pb-2">
+                      <p className="text-sm">Balance: {balance}</p>
+                    </div>
+                    <DropdownMenuSeparator />
                     <DropdownMenuGroup>
                       <DropdownMenuItem onClick={() => navigate("/account")}>
                         <User className="mr-2 h-5 w-5" />

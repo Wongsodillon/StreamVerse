@@ -5,8 +5,10 @@ import axios from "axios";
 import { BASE_URL } from "@/config/constants";
 import { useNavigate } from "react-router-dom";
 import InputError from "@/components/ui/input-error";
+import { useUser } from "@/context/UserContext";
 
 const Register = ({ changePage }: { changePage: (index: number) => void }) => {
+  const [user, fetchUser] = useUser();
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -27,7 +29,7 @@ const Register = ({ changePage }: { changePage: (index: number) => void }) => {
       });
       if (result.status === 201) {
         localStorage.setItem("token", result.data.token);
-        console.log("Successfully registered");
+        fetchUser();
         navigate("/home");
       }
     } catch (error: any) {

@@ -17,7 +17,7 @@ const GiftSelectionCard = ({
     <div
       onClick={onSelect}
       className={
-        "flex flex-col items-center gap-2 hover:bg-gray-100 py-4 transition-all duration-300 ease-out cursor-pointer " +
+        "flex flex-col items-center gap-2 hover:bg-gray-200 py-4 transition-all duration-300 ease-out cursor-pointer " +
         (isSelected ? "bg-gray-200" : "") +
         " " +
         className
