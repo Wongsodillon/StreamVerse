@@ -1,4 +1,8 @@
-<p style="font-size: 54px; font-weight: bold; text-align: center;">StreamVerse</p>
+<h1 align="center">
+  <br>
+     StreamVerse
+  <br>
+</h1>
 
 
 ## 📜 Installation Guide
