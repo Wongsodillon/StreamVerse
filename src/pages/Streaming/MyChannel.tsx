@@ -15,6 +15,12 @@ import { Button } from "@/components/ui/button";
 import { useParams } from "react-router-dom";
 import socket from "@/lib/webSocket";
 import { ChatMessageType } from "@/types/StreamTypes";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const MyChannel = () => {
   const [user, fetchUser] = useUser();
@@ -269,17 +275,26 @@ const MyChannel = () => {
             </div>
           </div>
           {!showChat && (
-            <div className="absolute right-1 top-2 p-4">
-              <button onClick={toggleChat}>
-                <Download size={32} className="rotate-90 text-white" />
-              </button>
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="absolute flex items-center justify-center right-4 top-4 p-2 hover:bg-gray-200 rounded-md transition-all duration-300">
+                    <button onClick={toggleChat}>
+                      <Download size={32} className="rotate-90 text-gray-500" />
+                    </button>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="p-2">
+                  <p className="text-md">Expand</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
         <div
           className={
-            "flex flex-col max-w-72 w-72 h-screen relative duration-200 bg-white ease-linear border-l  " +
-            (showChat ? "" : "hidden")
+            "absolute top-0 right-0 w-64 max-w-64 flex flex-col sm:w-80 sm:max-w-80 h-screen sm:relative duration-200 bg-white ease-linear border-l sm:translate-x-0 " +
+            (showChat ? "translate-x-0" : "sm:hidden translate-x-full")
           }
         >
           <div className="flex items-center w-full justify-between px-6 py-4 border-b drop-shadow-md">
@@ -290,28 +305,6 @@ const MyChannel = () => {
               onClick={() => setShowChat(false)}
             />
           </div>
-          {/* <div className="bg-white overflow-x-auto">
-            <div className="flex space-x-2 p-2">
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-            </div>
-          </div> */}
           <div className="bg-white flex-grow flex overflow-y-auto">
             {liveStream && (
               <ScrollArea className="px-4 py-2 flex-grow">

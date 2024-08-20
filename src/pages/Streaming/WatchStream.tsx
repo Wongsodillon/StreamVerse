@@ -22,6 +22,12 @@ import socket from "@/lib/webSocket";
 import { useToaster } from "@/context/ToastContext";
 import ProfilePicture from "@/components/ProfilePicture";
 import { ChatMessageType } from "@/types/StreamTypes";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 const WatchStream = () => {
   const [user, fetchUser, balance, fetchBalance] = useUser();
@@ -323,7 +329,7 @@ const WatchStream = () => {
             ref={videoRef}
             autoPlay
             muted
-            className="w-full object-cover"
+            className="w-full object-cover max-h-[32rem]"
           ></video>
           {/* {videoRef.current ? (
             <video
@@ -459,7 +465,6 @@ const WatchStream = () => {
                     {viewerCount} watching now
                   </p>
                 </div>
-                <p>Time elapsed: 4:06:20</p>
               </div>
               <br />
               <div className="flex flex-col gap-4">
@@ -475,17 +480,26 @@ const WatchStream = () => {
             </div>
           </div>
           {!showChat && (
-            <div className="absolute right-1 top-2 p-4">
-              <button onClick={toggleChat}>
-                <Download size={32} className="rotate-90 text-white" />
-              </button>
-            </div>
+            <TooltipProvider>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <div className="absolute flex items-center justify-center right-4 top-4 p-2 hover:bg-gray-200 rounded-md transition-all duration-300">
+                    <button onClick={toggleChat}>
+                      <Download size={32} className="rotate-90 text-gray-500" />
+                    </button>
+                  </div>
+                </TooltipTrigger>
+                <TooltipContent className="p-2">
+                  <p className="text-md">Expand</p>
+                </TooltipContent>
+              </Tooltip>
+            </TooltipProvider>
           )}
         </div>
         <div
           className={
-            "flex flex-col w-72 max-w-72 h-screen relative duration-200 bg-white ease-linear border-l  " +
-            (showChat ? "" : "hidden")
+            "absolute top-0 right-0 w-64 max-w-64 flex flex-col sm:w-80 sm:max-w-80 h-screen sm:relative duration-200 bg-white ease-linear border-l sm:translate-x-0 " +
+            (showChat ? "translate-x-0" : "sm:hidden translate-x-full")
           }
         >
           <div className="flex items-center w-full justify-between px-6 py-4 border-b drop-shadow-md">
@@ -495,35 +509,6 @@ const WatchStream = () => {
               className="cursor-pointer"
               onClick={() => setShowChat(false)}
             />
-          </div>
-          <div className="bg-white overflow-x-auto">
-            {/* {notification && (
-                <div
-                  className={`absolute top-4 right-4 p-4 rounded-md text-white ${notification.type === 'success' ? 'bg-green-600' : 'bg-red-600'}`}
-                >
-                  {notification.message}
-                </div>
-              )} */}
-            {/* <div className="flex space-x-2 p-2">
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-              <div className="w-20 rounded-md p-2 bg-yellow-gradient text-white">
-                Marco
-              </div>
-            </div> */}
           </div>
           <div className="bg-white flex flex-grow overflow-y-auto">
             {liveStream && (
